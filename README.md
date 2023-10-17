@@ -2,6 +2,7 @@
 
 ###### Alina Buzila, Yuval Kamani, Priyank Dave
 
+
 ### Project Overview
 RateMy is a web application designed for University of Toronto students, providing a platform to share feedback on courses and professors. It allows users to anonymously submit ratings and comments, with diverse metrics such as content difficulty, overall workload, usefulness in the real-world, professor responsiveness and help, and the quality of teaching. The platform also offers an intuitive representation of professor-specific course ratings and evaluations through diverse graphical representations. Users can view all course comments or filter their search based on professor and ratings.
 
