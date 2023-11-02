@@ -30,4 +30,9 @@ module.exports.post = async (req, res) => {
       return res.status(200).json(insertedCourse);
     }
   };
+  module.exports.getAll = async (req, res) => {
+    const { page, limit } = req.query;
+    const courses = await db.models.course.find().skip(page * limit).limit(limit);
+    return res.status(200).json(courses);
+}
 
