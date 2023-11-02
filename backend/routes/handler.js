@@ -13,8 +13,6 @@ router.post("/api/user", user.post);
 router.get("/api/user/:id", user.get);
 router.post("/api/course", course.post);
 router.get("/api/courses", course.getAll);
-
-
-
+router.get("/api/course/:id", course.get);
 
 module.exports = router;
