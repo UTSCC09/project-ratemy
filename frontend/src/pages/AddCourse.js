@@ -1,16 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AddCourse = () => {
+  const navigate = useNavigate();
+  const [buttonDisabled, setButtonDisabled] = useState(true);
   const [courseInfo, setCourseInfo] = useState({
     dept: "",
     level: "",
-    code: "",
+    num: "",
     name: "",
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(courseInfo); //Need to send to post request
+    console.log("Submitted");
+    //Need to send to post request
   };
 
   const handleChange = (e) => {
@@ -21,27 +25,95 @@ const AddCourse = () => {
     });
   };
 
+  useEffect(() => {
+    if (
+      courseInfo.dept.length === 3 &&
+      courseInfo.level.length === 1 &&
+      courseInfo.num.length === 2
+    ) {
+      setButtonDisabled(false);
+    } else {
+      setButtonDisabled(true);
+    }
+  }, [courseInfo]);
+
   return (
-    <div>
-      <div className="Header">Add Course</div>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Course Department:
-          <input type="text" name="dept" onChange={handleChange} required />
-        </label>
-        <label>
-          Course Level:
-          <input type="text" name="level" onChange={handleChange} required />
-        </label>
-        <label>
-          Course Code:
-          <input type="text" name="code" onChange={handleChange} required />
-        </label>
-        <label>
-          Course Name:
-          <input type="text" name="name" onChange={handleChange} required />
-        </label>
-        <input type="submit" />
+    <div className="px-4 my-36 max-w-3xl mx-auto space-y-5">
+      <div>
+        <div className="text-5xl font-bold">Add Course</div>
+        <div className="text-gray-600">
+          Add a course you would like to review!
+        </div>
+      </div>
+
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col justify-center space-y-5"
+      >
+        <div>
+          <div className="flex space-x-5">
+            <label className="w-1/3">
+              Course Department:
+              <input
+                className="my-2 border-2 border-gray-400 rounded block py-2 px-4 w-full hover:border-gray-600 hover:border-2 focus:border-purple-700 focus:border-2 focus:outline-none"
+                type="text"
+                name="dept"
+                onChange={handleChange}
+                maxLength={3}
+                required
+              />
+            </label>
+            <label className="w-1/3">
+              Course Level:
+              <input
+                className="my-2 border-2 border-gray-400 rounded block py-2 px-4 w-full hover:border-gray-600 hover:border-2 focus:border-purple-700 focus:border-2 focus:outline-none"
+                type="text"
+                name="level"
+                onChange={handleChange}
+                maxLength={1}
+                required
+              />
+            </label>
+            <label className="w-1/3">
+              Course Number:
+              <input
+                className="my-2 border-2 border-gray-400 rounded block py-2 px-4 w-full hover:border-gray-600 hover:border-2 focus:border-purple-700 focus:border-2 focus:outline-none"
+                type="text"
+                name="num"
+                onChange={handleChange}
+                maxLength={2}
+                required
+              />
+            </label>
+          </div>
+          <label className="w-1/2">
+            Course Name:
+            <input
+              className="my-2 border-2 border-gray-400 rounded block py-2 px-4 w-full hover:border-gray-600 hover:border-2 focus:border-purple-700 focus:border-2 focus:outline-none"
+              type="text"
+              name="name"
+              onChange={handleChange}
+              required
+            />
+          </label>
+        </div>
+        <div className="flex space-x-5 font-semibold">
+          <button
+            className="border-2 border-gray-400 rounded-xl px-2 py-3 w-1/6 hover:bg-gray-200"
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            disabled={buttonDisabled}
+            className="border-2 border-purple-400 rounded-xl px-2 py-3 w-1/6 bg-purple-400 text-black disabled:bg-purple-300 disabled:text-gray-500 disabled:border-purple-400"
+            type="submit"
+          >
+            Add Course
+          </button>
+        </div>
       </form>
     </div>
   );
