@@ -10,9 +10,24 @@ const AddCourse = () => {
     num: "",
     name: "",
   });
+  const [deptError, setDeptError] = useState("");
+  const [levelError, setLevelError] = useState("");
+  const [numError, setNumError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const alphabetRegex = /^[a-zA-Z]+$/;
+    const numRegex = /^[0-9]+$/;
+    const levelRegex = /^[A-D1-4]$/;
+
+    if (!alphabetRegex.test(courseInfo.dept))
+      setDeptError("Enter only alphabets");
+    else setDeptError("");
+    if (!levelRegex.test(courseInfo.level))
+      setLevelError("Enter only characters from A-D to 1-4");
+    else setLevelError("");
+    if (!numRegex.test(courseInfo.num)) setNumError("Enter only numbers");
+    else setNumError("");
     console.log("Submitted");
     //Need to send to post request
   };
@@ -60,8 +75,10 @@ const AddCourse = () => {
                 name="dept"
                 onChange={handleChange}
                 maxLength={3}
+                placeholder="CSC"
                 required
               />
+              <div className="text-red-500">{deptError}</div>
             </label>
             <label className="w-1/3">
               Course Level:
@@ -71,8 +88,10 @@ const AddCourse = () => {
                 name="level"
                 onChange={handleChange}
                 maxLength={1}
+                placeholder="A"
                 required
               />
+              <div className="text-red-500">{levelError}</div>
             </label>
             <label className="w-1/3">
               Course Number:
@@ -82,8 +101,10 @@ const AddCourse = () => {
                 name="num"
                 onChange={handleChange}
                 maxLength={2}
+                placeholder="20"
                 required
               />
+              <div className="text-red-500">{numError}</div>
             </label>
           </div>
           <label className="w-1/2">
@@ -93,6 +114,7 @@ const AddCourse = () => {
               type="text"
               name="name"
               onChange={handleChange}
+              placeholder="Introduction to Computer Science I"
               required
             />
           </label>
@@ -108,7 +130,7 @@ const AddCourse = () => {
           </button>
           <button
             disabled={buttonDisabled}
-            className="border-2 border-purple-400 rounded-xl px-2 py-3 w-1/6 bg-purple-400 text-black disabled:bg-purple-300 disabled:text-gray-500 disabled:border-purple-400"
+            className="border-2 border-purple-400 rounded-xl px-2 py-3 w-1/6 bg-purple-400 text-black disabled:bg-purple-300 disabled:text-gray-500 disabled:border-purple-300"
             type="submit"
           >
             Add Course
