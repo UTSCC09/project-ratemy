@@ -28,6 +28,16 @@ const createSchemas = () => {
     });
     const user = mongoose.model("user", userSchema);
     models.user = user;
+    const courseSchema = new mongoose.Schema({
+        courseName: { type: String, required: true },
+        courseCode: { type: String, required: true, unique: true },
+        professorNames: { type: Array, required: true },
+        courseDepartment: { type: String, required: true },
+    });
+    
+    
+    const course = mongoose.model("course", courseSchema);
+    models.course = course;
 }
 
 const init = (url) => {
