@@ -1,7 +1,7 @@
 const db = require("../db");
 
 module.exports.post = async (req, res) => {
-    var userData = req.body;
+    let userData = req.body;
 
     const user = new db.models.user(userData);
 

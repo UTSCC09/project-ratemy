@@ -8,9 +8,11 @@ const router = express.Router();
 
 
 const user = require("./user");
-
+const course = require("./course");
 router.post("/api/user", user.post);
 router.get("/api/user/:id", user.get);
+router.post("/api/course", course.post);
+
 
 
 
