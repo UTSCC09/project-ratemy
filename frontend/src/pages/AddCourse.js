@@ -14,11 +14,11 @@ const AddCourse = () => {
   const [levelError, setLevelError] = useState("");
   const [numError, setNumError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const alphabetRegex = /^[a-zA-Z]+$/;
     const numRegex = /^[0-9]+$/;
-    const levelRegex = /^[A-D1-4]$/;
+    const levelRegex = /^[a-dA-D1-4]$/;
 
     if (!alphabetRegex.test(courseInfo.dept))
       setDeptError("Enter only alphabets");
@@ -29,12 +29,32 @@ const AddCourse = () => {
     if (!numRegex.test(courseInfo.num)) setNumError("Enter only numbers");
     else setNumError("");
 
-    //Need to send to post request
+    if (!deptError && !levelError && !numError) {
+      try {
+        await fetch("/api/course", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            courseName: courseInfo.name,
+            courseCode: (
+              courseInfo.dept +
+              courseInfo.level +
+              courseInfo.num
+            ).toUpperCase(),
+            professorNames: {},
+          }),
+        });
+      } catch (err) {
+        console.error("Error sending POST request:", err);
+      }
+    }
   };
 
   const handleChange = (e) => {
     const name = e.target.name;
-    const value = e.target.value.toUpperCase();
+    const value = e.target.value;
     setCourseInfo((prev) => {
       return { ...prev, [name]: value };
     });
