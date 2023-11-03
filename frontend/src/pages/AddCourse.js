@@ -24,17 +24,17 @@ const AddCourse = () => {
       setDeptError("Enter only alphabets");
     else setDeptError("");
     if (!levelRegex.test(courseInfo.level))
-      setLevelError("Enter only characters from A-D to 1-4");
+      setLevelError("Enter only characters from A-D or 1-4");
     else setLevelError("");
     if (!numRegex.test(courseInfo.num)) setNumError("Enter only numbers");
     else setNumError("");
-    console.log("Submitted");
+
     //Need to send to post request
   };
 
   const handleChange = (e) => {
     const name = e.target.name;
-    const value = e.target.value;
+    const value = e.target.value.toUpperCase();
     setCourseInfo((prev) => {
       return { ...prev, [name]: value };
     });
