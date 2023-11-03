@@ -32,7 +32,6 @@ const createSchemas = () => {
         courseName: { type: String, required: true },
         courseCode: { type: String, required: true, unique: true },
         professorNames: { type: Array, required: true },
-        courseDepartment: { type: String, required: true },
     });
     
     
