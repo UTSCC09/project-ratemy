@@ -15,9 +15,11 @@ module.exports.post = async (req, res) => {
         const professorExists = existingCourse.professorNames.some(professor => professor === professorName);
 
         if (!professorExists) {
+            if(professorName !== "") {
             existingCourse.professorNames.push({
                 name: professorName,
             });
+        }
 
             const updatedCourse = await existingCourse.save();
 
@@ -27,9 +29,12 @@ module.exports.post = async (req, res) => {
         }
     } else {
         const Course = new db.models.course(courseData);
+        if (professorName !== "") {
+
         Course.professorNames.push({
             name: professorName,
         });
+    }
         const insertedCourse = await Course.save();
         return res.status(200).json(insertedCourse);
     }
