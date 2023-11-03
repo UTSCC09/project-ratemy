@@ -31,7 +31,7 @@ const AddCourse = () => {
 
     if (!deptError && !levelError && !numError) {
       try {
-        await fetch("/api/course", {
+        await fetch("http://localhost:5000/api/course", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -43,7 +43,7 @@ const AddCourse = () => {
               courseInfo.level +
               courseInfo.num
             ).toUpperCase(),
-            professorNames: {},
+            professorName: "",
           }),
         });
       } catch (err) {
