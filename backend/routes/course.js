@@ -4,13 +4,8 @@ const db = require("../db");
 module.exports.post = async (req, res) => {
     const courseData = req.body;
     const courseCode = req.body.courseCode;
-    if (courseCode.length != 6
-        || courseCode[0] < 'A' || courseCode[0] > 'Z'
-        || courseCode[1] < 'A' || courseCode[1] > 'Z'
-        || courseCode[2] < 'A' || courseCode[2] > 'Z'
-        || courseCode[3] < 'A' || courseCode[3] > 'D'
-        || courseCode[4] < '0' || courseCode[4] > '9'
-        || courseCode[5] < '0' || courseCode[5] > '9') {
+    //regex to check if course code is valid
+    if (!courseCode.match(/[A-Z]{3}[A-D][0-9]{2}/)) {
         return res.status(400).json({ error: 'Invalid course code.' });
     }
     const professorName = req.body.professorName; 
