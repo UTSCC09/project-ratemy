@@ -41,3 +41,18 @@ module.exports.post = async (req, res) => {
         return res.json(insertedCourse);
     }
 };
+module.exports.getAll = async (req, res) => {
+    const page = req.query.page || 0;
+    const limit = req.query.limit || 10;
+    const courses = await db.models.course.find().skip(page * limit).limit(limit);
+    return res.json(courses);
+}
+module.exports.get = async (req, res) => {
+    const id = req.params.id;
+
+    const course = await db.models.course.findById(id);
+    if (course == null) {
+        return res.status(404).end("Course not found");
+    }
+    return res.json(course);
+}
