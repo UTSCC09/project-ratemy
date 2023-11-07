@@ -38,11 +38,7 @@ const AddCourse = () => {
           },
           body: JSON.stringify({
             name: courseInfo.name,
-            code: (
-              courseInfo.dept +
-              courseInfo.level +
-              courseInfo.num
-            ).toUpperCase(),
+            code: (courseInfo.dept + courseInfo.level + courseInfo.num).toUpperCase(),
           }),
         });
       } catch (err) {
@@ -151,6 +147,9 @@ const AddCourse = () => {
             disabled={buttonDisabled}
             className="border-2 border-purple-400 rounded-xl px-2 py-3 w-1/6 bg-purple-400 text-black disabled:bg-purple-300 disabled:text-gray-500 disabled:border-purple-300"
             type="submit"
+            onClick={() => {
+              navigate("/course");
+            }}
           >
             Add Course
           </button>
