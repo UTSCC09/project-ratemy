@@ -36,6 +36,14 @@ const createSchemas = () => {
     });
     const course = mongoose.model("course", courseSchema);
     models.course = course;
+    const reviewSchema = new mongoose.Schema({
+        courseCode: { type: String, required: true },
+        rating: { type: Number, required: true },
+        review: { type: String, required: true },
+        email: { type: String, required: true },
+    });
+    const review = mongoose.model("review", reviewSchema);
+    models.review = review;
 }
 
 const init = (url) => {
