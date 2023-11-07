@@ -7,10 +7,9 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="mx-auto max-w-5x text-center mt-4 mx-4">
-      <div className="flex align-middle justify-end space-x-3 max-w-full font-bold">
-        <div className="hover:text-purple-700 text-black">Sign In</div>
-        <div className="hover:text-purple-700 text-black">Sign Up</div>
+    <div className="mx-auto max-w-5x text-center mt-4">
+      <div className="flex align-middle justify-end space-x-3 max-w-full font-bold mx-4">
+        <div className="hover:text-purple-700 text-black">Sign In/Sign Up</div>
       </div>
       <div className="text-9xl font-bold  mt-36">
         Rate<span className="text-purple-700">My</span>
@@ -18,20 +17,44 @@ const Home = () => {
       <div className="mt-7 text-2xl">
         Your Reviews, Your Instructors, Your Academic Impact
       </div>
-      <div className="mt-20 w-6/12 mx-auto flex align-middle justify-between ">
-        <div className="text-left px-2 py-3">
-          Select or add a course to get started!
-        </div>
-        <button
-          onClick={() => {
-            navigate("/add-course");
-          }}
-          className="rounded-xl px-2 py-3 w-1/6
+      <div className="mt-20 w-6/12 mx-auto">
+        <div className="flex align-middle justify-between">
+          <div className="px-2 py-3">
+            Select or add a course to get started!
+          </div>
+          <button
+            onClick={() => {
+              navigate("/add-course");
+            }}
+            className="rounded-xl px-2 py-3 w-1/6
           bg-purple-500 text-white font-bold hover:bg-purple-700"
-        >
-          Add Course
-        </button>
+          >
+            Add Course
+          </button>
+        </div>
+        <div className="flex flex-col text-left px-4 py-4 space-y-3 my-4 text-purple-700 border-solid border border-black rounded-xl">
+          <div className="font-bold text-2xl hover:text-black">Course 1</div>
+          <div className="font-bold text-2xl hover:text-black">Course 2</div>
+          <div className="font-bold text-2xl hover:text-black">Course 3</div>
+          <div className="font-bold text-2xl hover:text-black">Course 4</div>
+          <div className="font-bold text-2xl hover:text-black">Course 5</div>
+        </div>
+        <div className="flex flex-row-reverse justify-between">
+          <button
+            className="rounded-xl px-2 py-3 w-1/6
+          bg-purple-400 text-white font-bold hover:bg-purple-700"
+          >
+            Next
+          </button>
+          <button
+            className="rounded-xl px-2 py-3 w-1/6
+          bg-purple-400 text-white font-bold hover:bg-purple-700"
+          >
+            Prev
+          </button>
+        </div>
       </div>
+
       {/* <button
         onClick={() => {
           navigate("/add-course");
