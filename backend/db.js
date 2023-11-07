@@ -29,13 +29,11 @@ const createSchemas = () => {
     const user = mongoose.model("user", userSchema);
     models.user = user;
     const courseSchema = new mongoose.Schema({
-        courseName: { type: String, required: true },
-        courseCode: { type: String, required: true, unique: true },
-        professorNames: { type: Array, required: true },
-        
+        name: { type: String, required: true },
+        code: { type: String, required: true },
+        professorName: [String],
+
     });
-    
-    
     const course = mongoose.model("course", courseSchema);
     models.course = course;
 }
