@@ -19,7 +19,7 @@ const secured = (req, res, next) => {
       return next();
     }
     req.session.returnTo = req.originalUrl;
-    res.redirect("/api/auth/login");
+    return res.status(401).json({ error: 'Unauthorized' });
   };
   const loginAuth = (req, res, next) => {
     if (req.user) {
