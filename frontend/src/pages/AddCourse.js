@@ -149,7 +149,8 @@ const AddCourse = () => {
           </button>
           <button
             disabled={buttonDisabled}
-            className="border-2 border-purple-400 rounded-xl px-2 py-3 w-1/6 bg-purple-400 text-black disabled:bg-purple-300 disabled:text-gray-500 disabled:border-purple-300"
+            className="rounded-xl px-2 py-3 w-1/6
+            bg-purple-500 text-white font-bold hover:bg-purple-700 disabled:bg-purple-300 disabled:border-purple-300"
             type="submit"
           >
             Add Course
