@@ -37,13 +37,12 @@ const AddCourse = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            courseName: courseInfo.name,
-            courseCode: (
+            name: courseInfo.name,
+            code: (
               courseInfo.dept +
               courseInfo.level +
               courseInfo.num
             ).toUpperCase(),
-            professorName: "",
           }),
         });
       } catch (err) {
