@@ -10,7 +10,23 @@ const Home = () => {
   const [courses, setCourses] = useState([]);
   let pageIndex = 0;
   const limit = 10;
-
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    try {
+      fetch("http://localhost:5000/api/user", 
+      {
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setUser(data);
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  , []);
   useEffect(() => {
     try {
       fetch(

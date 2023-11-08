@@ -51,11 +51,21 @@
     passport.serializeUser((user, done) => {
     done(null, user);
     });
+    
 
+    app.use(cors({
+      origin: "http://localhost:3000",
+      credentials: true, // If you need to send cookies or headers with your requests
+    }));
     passport.deserializeUser((user, done) => {
     done(null, user);
     });
-
+    app.use(function (req, res, next) {
+        res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+        res.header("Access-Control-Allow-Headers", "Content-Type");
+        res.header("Access-Control-Allow-Methods", "*");
+        next();
+      });
     app.use(require("./routes/handler"));
     app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
