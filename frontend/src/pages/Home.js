@@ -32,7 +32,9 @@ const Home = () => {
   return (
     <div className="mx-auto max-w-5x text-center mt-4">
       <div className="flex align-middle justify-end space-x-3 max-w-full font-bold mx-4">
+        <a href="http://localhost:5000/api/auth/login">
         <div className="hover:text-purple-700 text-black">Sign In/Sign Up</div>
+        </a>
       </div>
       <div className="text-9xl font-bold  mt-36">
         Rate<span className="text-purple-700">My</span>
