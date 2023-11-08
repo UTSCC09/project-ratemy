@@ -7,12 +7,6 @@ const querystring = require("querystring");
 require("dotenv").config();
 // const db = require("../db");
 
-<<<<<<< HEAD
-// const ObjectId = require("mongodb").ObjectId;
-
-
-=======
->>>>>>> 6da618d (Wip)
 const user = require("./user");
 const auth = require("./auth");
 const course = require("./course");
@@ -44,11 +38,6 @@ const review = require("./review");
 router.post("/api/reviews", review.postReview);
 router.get("/api/reviews/all", review.getReviews);
 router.get("/api/reviews/:id", review.getCourseReviews);
-<<<<<<< HEAD
-=======
-router.patch("/api/reviews/:id", review.patchReview);
-router.delete("/api/reviews/:id", review.deleteReview);
->>>>>>> 6da618d (Wip)
 router.post("/api/user", user.post);
 router.get("/api/user/:id", user.get);
 router.post("/api/reviews", review.postReview);
