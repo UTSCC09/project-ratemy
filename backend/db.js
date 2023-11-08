@@ -36,6 +36,23 @@ const createSchemas = () => {
     });
     const course = mongoose.model("course", courseSchema);
     models.course = course;
+
+    const reviewSchema = new mongoose.Schema({
+        course_id: { type: String, required: true },
+        rating: {
+            difficulty: { type: Number, required: true },
+            usefulness_real_world: { type: Number, required: true },
+            workload: { type: Number, required: true },
+            staff_responsiveness: { type: Number, required: true },
+            quality_of_teaching: { type: Number, required: true },
+        },
+        review: { type: String, required: true },
+        email: { type: String, required: true },
+        date: { type: Date, required: true },
+    });
+    const review = mongoose.model("review", reviewSchema);
+    models.review = review;
+
 }
 
 const init = (url) => {
