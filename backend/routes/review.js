@@ -1,4 +1,5 @@
 const db = require("../db");
+const mongoose = require("mongoose")
 
 // this endpoint takes 
 // 'course_id', 'rating' = { 'difficulty', 'usefulness_real_world', 'staff_responsiveness', 'quality_of_teaching', 'workload' }, 'review', 
@@ -16,6 +17,37 @@ exports.postReview = async (req, res) => {
     try {
         const insertedReview = await review.save();
         return res.status(200).json(insertedReview);
+    }
+    catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+}
+
+// takes page and limit as query params
+exports.getReviews = async (req, res) => {
+    const page = req.query.page || 0;
+    const limit = req.query.limit || 10;
+    try {
+        const reviews = await db.models.review.find().sort({ date: -1 }).skip(page * limit).limit(limit);
+        return res.status(200).json(reviews);
+    }
+    catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+}
+
+// takes page and limit as query params
+exports.getCourseReviews = async (req, res) => {
+    const page = req.query.page || 0;
+    const limit = req.query.limit || 10;
+    const courseId = req.params.id;
+    console.log("here");
+    if (courseId == null) {
+        return res.status(400).json({ error: 'Missing course id.' })
+    }
+    try {
+        const reviews = await db.models.review.find({ course_id: new mongoose.Types.ObjectId(courseId) }).skip(page * limit).limit(limit);
+        return res.status(200).json(reviews);
     }
     catch (err) {
         return res.status(500).json({ error: err.message });
