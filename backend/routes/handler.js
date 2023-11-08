@@ -11,6 +11,7 @@ const user = require("./user");
 const course = require("./course");
 router.post("/api/user", user.post);
 router.get("/api/user/:id", user.get);
+router.post("/api/reviews", review.postReview);
 router.post("/api/course", course.post);
 router.get("/api/courses", course.getAll);
 router.get("/api/course/:id", course.get);
