@@ -1,21 +1,95 @@
 // Citation: icons from https://react-icons.github.io/react-icons/search?q=plus
-import { AiOutlinePlus } from "react-icons/ai";
+// import { AiOutlinePlus } from "react-icons/ai";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   // Citation: navigate react router https://stackoverflow.com/questions/31079081/programmatically-navigate-using-react-router
   const navigate = useNavigate();
 
+  const [courses, setCourses] = useState([]);
+  let pageIndex = 0;
+  const limit = 10;
+
+  useEffect(() => {
+    try {
+      fetch(
+        "http://localhost:5000/api/courses?page=" +
+          pageIndex +
+          "&limit=" +
+          limit
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setCourses(data);
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  }, [pageIndex]);
+
   return (
-    <div>
-      Home
-      <button
+    <div className="mx-auto max-w-5x text-center mt-4">
+      <div className="flex align-middle justify-end space-x-3 max-w-full font-bold mx-4">
+        <div className="hover:text-purple-700 text-black">Sign In/Sign Up</div>
+      </div>
+      <div className="text-9xl font-bold  mt-36">
+        Rate<span className="text-purple-700">My</span>
+      </div>
+      <div className="mt-7 text-2xl">
+        Your Reviews, Your Instructors, Your Academic Impact
+      </div>
+      <div className="mt-20 w-6/12 mx-auto">
+        <div className="flex align-middle justify-between">
+          <div className="px-2 py-3">
+            Select or add a course to get started!
+          </div>
+          <button
+            onClick={() => {
+              navigate("/add-course");
+            }}
+            className="rounded-xl px-2 py-3 w-1/6
+          bg-purple-500 text-white font-bold hover:bg-purple-700"
+          >
+            Add Course
+          </button>
+        </div>
+        <div className="flex flex-col text-left px-4 py-4 space-y-3 my-4 text-purple-700 border-solid border border-black rounded-xl">
+          {courses.map((course) => {
+            return (
+              <div
+                key={course._id}
+                className="font-bold text-2xl hover:text-black hover:bg-gray-200"
+              >
+                {course.code}
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex flex-row-reverse justify-between">
+          <button
+            className="rounded-xl px-2 py-3 w-1/6
+          bg-purple-400 text-white font-bold hover:bg-purple-700"
+          >
+            Next
+          </button>
+          <button
+            className="rounded-xl px-2 py-3 w-1/6
+          bg-purple-400 text-white font-bold hover:bg-purple-700"
+          >
+            Prev
+          </button>
+        </div>
+      </div>
+
+      {/* <button
         onClick={() => {
           navigate("/add-course");
         }}
       >
         <AiOutlinePlus />
-      </button>
+      </button> */}
     </div>
   );
 };

@@ -39,5 +39,17 @@ router.get("/api/auth/logout", auth.logout);
 
 
 
+const review = require("./review");
+
+
+router.post("/api/reviews", review.postReview);
+router.get("/api/reviews/all", review.getReviews);
+router.get("/api/reviews/:id", review.getCourseReviews);
+router.post("/api/user", user.post);
+router.get("/api/user/:id", user.get);
+router.post("/api/reviews", review.postReview);
+router.post("/api/courses", course.post);
+router.get("/api/courses", course.getAll);
+router.get("/api/courses/:id", course.get);
 
 module.exports = router;

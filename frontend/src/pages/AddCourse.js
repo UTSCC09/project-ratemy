@@ -31,19 +31,18 @@ const AddCourse = () => {
 
     if (!deptError && !levelError && !numError) {
       try {
-        await fetch("http://localhost:5000/api/course", {
+        await fetch("http://localhost:5000/api/courses", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            courseName: courseInfo.name,
-            courseCode: (
+            name: courseInfo.name,
+            code: (
               courseInfo.dept +
               courseInfo.level +
               courseInfo.num
             ).toUpperCase(),
-            professorName: "",
           }),
         });
       } catch (err) {
@@ -150,7 +149,8 @@ const AddCourse = () => {
           </button>
           <button
             disabled={buttonDisabled}
-            className="border-2 border-purple-400 rounded-xl px-2 py-3 w-1/6 bg-purple-400 text-black disabled:bg-purple-300 disabled:text-gray-500 disabled:border-purple-300"
+            className="rounded-xl px-2 py-3 w-1/6
+            bg-purple-500 text-white font-bold hover:bg-purple-700 disabled:bg-purple-300 disabled:border-purple-300"
             type="submit"
           >
             Add Course
