@@ -2,8 +2,6 @@ const express = require("express");
 
 const router = express.Router();
 
-// import mongoose from 'mongoose';
-// const ObjectId = require("mongodb").ObjectId;
 
 const user = require("./user");
 const course = require("./course");
@@ -11,8 +9,8 @@ const review = require("./review");
 
 
 router.post("/api/reviews", review.postReview);
-router.get("/api/reviews", review.getReviews);
-router.get("/api/reviews/:courseId", review.getCourseReviews);
+router.get("/api/reviews/all", review.getReviews);
+router.get("/api/reviews/:id", review.getCourseReviews);
 router.patch("/api/reviews/:id", review.patchReview);
 router.delete("/api/reviews/:id", review.deleteReview);
 router.post("/api/user", user.post);

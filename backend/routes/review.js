@@ -1,4 +1,5 @@
 const db = require("../db");
+const mongoose = require("mongoose")
 
 // this endpoint takes 
 // 'course_id', 'rating' = { 'difficulty', 'usefulness_real_world', 'staff_responsiveness', 'quality_of_teaching', 'workload' }, 'review', 
@@ -39,13 +40,13 @@ exports.getReviews = async (req, res) => {
 exports.getCourseReviews = async (req, res) => {
     const page = req.query.page || 0;
     const limit = req.query.limit || 10;
-    const courseId = req.params.courseId;
+    const courseId = req.params.id;
+    console.log("here");
     if (courseId == null) {
         return res.status(400).json({ error: 'Missing course id.' })
     }
     try {
-        const reviews = await db.models.review.find({ course_id: mongoose.Types.ObjectId(courseId) }).skip(page * limit).limit(limit);
-        console.log("here");
+        const reviews = await db.models.review.find({ course_id: new mongoose.Types.ObjectId(courseId) }).skip(page * limit).limit(limit);
         return res.status(200).json(reviews);
     }
     catch (err) {
