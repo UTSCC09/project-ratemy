@@ -41,7 +41,6 @@ exports.getCourseReviews = async (req, res) => {
     const page = req.query.page || 0;
     const limit = req.query.limit || 10;
     const courseId = req.params.id;
-    console.log("here");
     if (courseId == null) {
         return res.status(400).json({ error: 'Missing course id.' })
     }
