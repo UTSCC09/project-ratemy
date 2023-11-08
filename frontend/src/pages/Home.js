@@ -9,7 +9,7 @@ const Home = () => {
 
   const [courses, setCourses] = useState([]);
   let pageIndex = 0;
-  const limit = 2;
+  const limit = 10;
 
   useEffect(() => {
     try {
@@ -21,6 +21,7 @@ const Home = () => {
       )
         .then((res) => res.json())
         .then((data) => {
+          console.log(data);
           setCourses(data);
         });
     } catch (err) {
@@ -55,9 +56,6 @@ const Home = () => {
           </button>
         </div>
         <div className="flex flex-col text-left px-4 py-4 space-y-3 my-4 text-purple-700 border-solid border border-black rounded-xl">
-          {/* <div className="font-bold text-2xl hover:text-black hover:bg-gray-200">
-            Course 1
-          </div> */}
           {courses.map((course) => {
             return (
               <div
