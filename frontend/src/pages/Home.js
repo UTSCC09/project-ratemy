@@ -1,10 +1,33 @@
 // Citation: icons from https://react-icons.github.io/react-icons/search?q=plus
 // import { AiOutlinePlus } from "react-icons/ai";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   // Citation: navigate react router https://stackoverflow.com/questions/31079081/programmatically-navigate-using-react-router
   const navigate = useNavigate();
+
+  const [courses, setCourses] = useState([]);
+  let pageIndex = 0;
+  const limit = 10;
+
+  useEffect(() => {
+    try {
+      fetch(
+        "http://localhost:5000/api/courses?page=" +
+          pageIndex +
+          "&limit=" +
+          limit
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setCourses(data);
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  }, [pageIndex]);
 
   return (
     <div className="mx-auto max-w-5x text-center mt-4">
@@ -33,11 +56,16 @@ const Home = () => {
           </button>
         </div>
         <div className="flex flex-col text-left px-4 py-4 space-y-3 my-4 text-purple-700 border-solid border border-black rounded-xl">
-          <div className="font-bold text-2xl hover:text-black">Course 1</div>
-          <div className="font-bold text-2xl hover:text-black">Course 2</div>
-          <div className="font-bold text-2xl hover:text-black">Course 3</div>
-          <div className="font-bold text-2xl hover:text-black">Course 4</div>
-          <div className="font-bold text-2xl hover:text-black">Course 5</div>
+          {courses.map((course) => {
+            return (
+              <div
+                key={course._id}
+                className="font-bold text-2xl hover:text-black hover:bg-gray-200"
+              >
+                {course.code}
+              </div>
+            );
+          })}
         </div>
         <div className="flex flex-row-reverse justify-between">
           <button
