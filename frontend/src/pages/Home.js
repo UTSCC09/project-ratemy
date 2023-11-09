@@ -58,12 +58,15 @@ const Home = () => {
         <div className="flex flex-col text-left px-4 py-4 space-y-3 my-4 text-purple-700 border-solid border border-black rounded-xl">
           {courses.map((course) => {
             return (
-              <div
+              <button
                 key={course._id}
+                onClick={() => {
+                  navigate('/course', { state: {courseId: course._id}});
+                }}
                 className="font-bold text-2xl hover:text-black hover:bg-gray-200"
               >
                 {course.code}
-              </div>
+              </button>
             );
           })}
         </div>

@@ -48,6 +48,7 @@ const createSchemas = () => {
         },
         review: { type: String, required: true },
         email: { type: String, required: true },
+        professor: { type: String, required: true },
         date: { type: Date, required: true },
     });
     const review = mongoose.model("review", reviewSchema);
