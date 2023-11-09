@@ -21,7 +21,6 @@ const Home = () => {
       )
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
           setCourses(data);
         });
     } catch (err) {
@@ -30,7 +29,7 @@ const Home = () => {
   }, [pageIndex]);
 
   return (
-    <div className="mx-auto max-w-5x text-center mt-4">
+    <div className="mx-auto max-w-5xl text-center mt-4">
       <div className="flex align-middle justify-end space-x-3 max-w-full font-bold mx-4">
         <div className="hover:text-purple-700 text-black">Sign In/Sign Up</div>
       </div>
@@ -61,7 +60,7 @@ const Home = () => {
               <button
                 key={course._id}
                 onClick={() => {
-                  navigate('/course', { state: {courseId: course._id}});
+                  navigate("/course", { state: { courseId: course._id } });
                 }}
                 className="font-bold text-2xl hover:text-black hover:bg-gray-200"
               >
