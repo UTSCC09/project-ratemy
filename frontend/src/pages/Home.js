@@ -44,7 +44,6 @@ const Home = () => {
       )
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
           setCourses(data);
         });
     } catch (err) {

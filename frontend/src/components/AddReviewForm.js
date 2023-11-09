@@ -27,18 +27,8 @@ const CoursePage = () => {
         workload: 0,
     })
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-    }
-
-    const handleEditing = (e) => {
-        e.preventDefault();
-    }
-
-
     return (
         <form
-            onSubmit={handleSubmit}
             className="flex flex-col justify-center space-y-5"
         >
             <div>
@@ -79,9 +69,12 @@ const CoursePage = () => {
                         className="my-2 border-2 border-gray-400 rounded block py-2 px-4 w-full hover:border-gray-600 hover:border-2 focus:border-purple-700 focus:border-2 focus:outline-none"
                         value={revData.review}
                         type="text"
-                        name="rev"
-                        onChange={handleEditing}
-                        placeholder="Smith"
+                        name="review"
+                        onChange={(event, newVal) => {
+                            var rev = { ...rating, review: newVal };
+                            setRevData(rev);
+                        }}
+                        placeholder=""
                         required
                     />
                 </div>

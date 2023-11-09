@@ -31,7 +31,7 @@ const AddCourse = () => {
 
     if (!deptError && !levelError && !numError) {
       try {
-        await fetch("http://localhost:5000/api/course", {
+        fetch("http://localhost:5000/api/courses", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -44,6 +44,10 @@ const AddCourse = () => {
               courseInfo.num
             ).toUpperCase(),
           }),
+        })
+        .then((res) => res.json())
+        .then((data) => {
+          navigate('/course', { state: {courseId: data._id}});
         });
       } catch (err) {
         console.error("Error sending POST request:", err);
