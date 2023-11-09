@@ -10,7 +10,30 @@ const Home = () => {
   const [courses, setCourses] = useState([]);
   let pageIndex = 0;
   const limit = 10;
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    try {
+      fetch("http://localhost:5000/api/user", 
+      {
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.error) {
+            console.error(data.error);
+            setUser(null);
+            return;
+          }
+          console.log(data);
+          setUser(data);
+        });
 
+    } catch (err) {
+      console.error(err);
+      setUser(null);
+    }
+  }
+  , []);
   useEffect(() => {
     try {
       fetch(
@@ -31,12 +54,19 @@ const Home = () => {
 
   return (
     <div className="mx-auto max-w-5x text-center mt-4">
-      <div className="flex align-middle justify-end space-x-3 max-w-full font-bold mx-4">
-        <div className="hover:text-purple-700 text-black">Sign In/Sign Up</div>
+      <div className="flex align-middle justify-end space-x-3 max-w-full font-bold mx-4">        
+        {user ? (
+          <a href="http://localhost:5000/api/auth/logout">
+          <div className="hover:text-purple-700 text-black">{user.displayName}, Logout</div>
+          </a>
+          
+        ) : (
+          <a href="http://localhost:5000/api/auth/login">
+          <div className="hover:text-purple-700 text-black">Sign In/Sign Up</div>
+          </a>
+        )}
       </div>
-      <div className="text-9xl font-bold  mt-36">
-        Rate<span className="text-purple-700">My</span>
-      </div>
+      <div className="text-9xl font-bold  mt-36"> Rate<span className="text-purple-700">My</span></div>   
       <div className="mt-7 text-2xl">
         Your Reviews, Your Instructors, Your Academic Impact
       </div>

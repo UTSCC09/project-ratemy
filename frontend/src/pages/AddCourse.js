@@ -31,7 +31,7 @@ const AddCourse = () => {
 
     if (!deptError && !levelError && !numError) {
       try {
-        await fetch("http://localhost:5000/api/courses", {
+        await fetch("http://localhost:5000/api/course", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
