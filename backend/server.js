@@ -54,9 +54,16 @@
     
 
     app.use(cors({
-      origin: "http://localhost:3000",
-      credentials: true, // If you need to send cookies or headers with your requests
+        origin: "http://localhost:3000",
+        
+        credentials: true, // If you need to send cookies or headers with your requests
     }));
+    app.use(function (req, res, next) {
+        res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+        res.header("Access-Control-Allow-Headers", "Content-Type");
+        res.header("Access-Control-Allow-Methods", "*");
+        next();
+      });
     passport.deserializeUser((user, done) => {
     done(null, user);
     });

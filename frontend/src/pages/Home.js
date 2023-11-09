@@ -57,7 +57,7 @@ const Home = () => {
       <div className="flex align-middle justify-end space-x-3 max-w-full font-bold mx-4">        
         {user ? (
           <a href="http://localhost:5000/api/auth/logout">
-          <div className="hover:text-purple-700 text-black">{user.name.givenName}, Logout</div>
+          <div className="hover:text-purple-700 text-black">{user.displayName}, Logout</div>
           </a>
           
         ) : (
