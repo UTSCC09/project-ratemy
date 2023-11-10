@@ -68,7 +68,6 @@ const Home = () => {
       <div className="text-9xl font-bold  mt-36">
         Rate<span className="text-purple-700">My</span>
       </div>
-      <div className="text-9xl font-bold  mt-36"> Rate<span className="text-purple-700">My</span></div>   
       <div className="mt-7 text-2xl">
         Your Reviews, Your Instructors, Your Academic Impact
       </div>
