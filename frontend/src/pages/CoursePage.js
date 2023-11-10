@@ -20,6 +20,7 @@ const CoursePage = () => {
     const courseId = state !== null ? state.courseId : "";
     const [course, setCourse] = useState([]);
     const [reviews, setReviews] = useState([]);
+    const [avgRatings, setAvgRatings] = useState([]);
     let pageIndex = 0;
     const limit = 10;
 
@@ -30,6 +31,13 @@ const CoursePage = () => {
                 .then((res) => res.json())
                 .then((data) => {
                     setCourse(data);
+                });
+
+            fetch("http://localhost:5000/api/reviews/averages/" + courseId)
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log(data);
+                    setAvgRatings(data);
                 });
         } catch (err) {
             console.error(err);
@@ -60,12 +68,26 @@ const CoursePage = () => {
             <div className="text-5xl font-bold">{course.code}</div>
             <div className="text-2xl font-semibold text-gray-600">{course.name}</div>
 
+
+            <div>
+                {Object.keys(avgRatings).map((ratingKey) => {
+                    return (<span key={ratingKey}>
+                        {ratingsMappings[ratingKey]}
+                        <Rating
+                            value={avgRatings[ratingKey]}
+                            precision={0.5}
+                            readOnly
+                        />
+                    </span>
+                    );
+                })}
+            </div>
+
             <AddReviewForm
                 courseId={courseId}
                 setReviews={setReviews}
                 reviews={reviews}
             />
-
             <div className="space-y-5">
                 {reviews.map((rev) => {
                     return (
