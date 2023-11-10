@@ -12,7 +12,7 @@ exports.postReview = async (req, res) => {
         req.body.email == null ||
         req.body.professor == null
     ) {
-        res.status(400).json({ error: "Missing params." });
+        return res.status(400).json({ error: "Missing params." });
     }
     if (
         req.body.rating.difficulty == null ||
@@ -21,11 +21,11 @@ exports.postReview = async (req, res) => {
         req.body.rating.quality_of_teaching == null ||
         req.body.rating.workload == null
     ) {
-        res.status(400).json({ error: "Missing ratings." });
+        return res.status(400).json({ error: "Missing ratings." });
     }
     if (!isRating(req.body.rating.difficulty) || !isRating(req.body.rating.usefulness_real_world) || !isRating(req.body.rating.staff_responsiveness) ||
         !isRating(req.body.rating.quality_of_teaching) || !isRating(req.body.rating.workload)) {
-        res.status(400).json({ error: "invalid rating" })
+        return res.status(400).json({ error: "invalid rating" })
     }
     let reviewData = { date: Date.now(), ...req.body };
     const review = new db.models.review(reviewData);
@@ -38,7 +38,7 @@ exports.postReview = async (req, res) => {
 };
 
 function isRating(x) {
-    if (x !== "1" && x !== "2" && x !== "3" && x !== "4" && x !== "5") {
+    if (x <= 0 || x > 5) {
         return false
     }
     return true
@@ -81,7 +81,6 @@ exports.getCourseReviews = async (req, res) => {
 
 exports.getRatingAverages = async (req, res) => {
     const courseId = req.params.id;
-    console.log("yo");
     if (courseId == null) {
         return res.status(400).json({ error: 'Missing course id.' })
     }
@@ -98,9 +97,13 @@ exports.getRatingAverages = async (req, res) => {
                         staff_responsiveness: { $avg: "$rating.staff_responsiveness" },
                         quality_of_teaching: { $avg: "$rating.quality_of_teaching" },
                     }
+            },
+            {
+                $project: {
+                    _id: 0,
+                }
             }
         ])
-        console.log(averageRating[0])
         if (averageRating.length > 0) {
             return res.status(200).json(averageRating[0]);
         }

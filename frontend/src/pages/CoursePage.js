@@ -32,7 +32,13 @@ const CoursePage = () => {
                 .then((data) => {
                     setCourse(data);
                 });
+        } catch (err) {
+            console.error(err);
+        }
+    }, [courseId]);
 
+    useEffect(() => {
+        try {
             fetch("http://localhost:5000/api/reviews/averages/" + courseId)
                 .then((res) => res.json())
                 .then((data) => {
@@ -42,7 +48,7 @@ const CoursePage = () => {
         } catch (err) {
             console.error(err);
         }
-    }, [courseId]);
+    }, [reviews]);
 
     useEffect(() => {
         try {
