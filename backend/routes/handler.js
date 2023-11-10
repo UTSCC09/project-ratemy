@@ -27,11 +27,6 @@ const loginAuth = (req, res, next) => {
 
 router.get("/api/user", secured, user.userData);
 
-router.post("/api/course", course.post);
-router.get("/api/auth/login", loginAuth, auth.login);
-router.get("/api/auth/callback", auth.callback);
-router.get("/api/auth/logout", auth.logout);
-
 const review = require("./review");
 
 
@@ -39,6 +34,10 @@ router.post("/api/reviews", review.postReview);
 router.get("/api/reviews/all", review.getReviews);
 router.get("/api/reviews/:id", review.getCourseReviews);
 router.post("/api/reviews", review.postReview);
+router.get("/api/auth/login", loginAuth, auth.login);
+router.get("/api/auth/callback", auth.callback);
+router.get("/api/auth/logout", auth.logout);
+router.post("/api/courses", course.post);
 router.get("/api/courses", course.getAll);
 router.get("/api/courses/:id", course.get);
 
