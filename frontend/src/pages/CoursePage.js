@@ -53,14 +53,18 @@ const CoursePage = () => {
     } catch (err) {
       console.error(err);
     }
-  }, [pageIndex, courseId]);
+  }, []);
 
   return (
     <div className="px-6 my-36 max-w-4xl mx-auto space-y-5">
       <div className="text-5xl font-bold">{course.code}</div>
       <div className="text-2xl font-semibold text-gray-600">{course.name}</div>
 
-      <AddReviewForm courseId={courseId} />
+      <AddReviewForm
+        courseId={courseId}
+        setReviews={setReviews}
+        reviews={reviews}
+      />
 
       <div className="space-y-5">
         {reviews.map((rev) => {

@@ -29,7 +29,7 @@ const Home = () => {
   }, [pageIndex]);
 
   return (
-    <div className="mx-auto max-w-5xl text-center mt-4">
+    <div className="mx-auto text-center mt-4">
       <div className="flex align-middle justify-end space-x-3 max-w-full font-bold mx-4">
         <div className="hover:text-purple-700 text-black">Sign In/Sign Up</div>
       </div>

@@ -11,7 +11,7 @@ const ratingsMappings = {
   workload: "Workload",
 };
 
-const CoursePage = ({ courseId }) => {
+const CoursePage = ({ courseId, reviews, setReviews }) => {
   // Citation: navigate react router https://stackoverflow.com/questions/31079081/programmatically-navigate-using-react-router
   const [revData, setRevData] = useState({
     prof: "",
@@ -25,6 +25,9 @@ const CoursePage = ({ courseId }) => {
     usefulness_real_world: 0,
     workload: 0,
   });
+
+  let pageIndex = 0;
+  const limit = 10;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -59,6 +62,8 @@ const CoursePage = ({ courseId }) => {
     } catch (err) {
       console.error("Error sending POST request: ", err);
     }
+
+    setReviews((reviews) => [...reviews, bodyObject]);
   };
 
   const handleChange = (e) => {
