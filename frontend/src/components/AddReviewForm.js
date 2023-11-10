@@ -39,18 +39,26 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
       professor: revData.prof,
     };
     try {
-      await fetch("http://localhost:5000/api/reviews/", {
+      fetch("http://localhost:5000/api/reviews/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(bodyObject),
+      })
+      .then((res) => {
+          if (res.status == 200) {
+          let data = res.json()
+          .then((data) => {
+            setReviews((reviews => [...reviews, data]));
+          })
+        }
       });
 
       setRevData({
         prof: "",
         review: "",
-      });
+      })
 
       setRating({
         difficulty: 0,
@@ -63,7 +71,6 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
       console.error("Error sending POST request: ", err);
     }
 
-    setReviews((reviews) => [...reviews, bodyObject]);
   };
 
   const handleChange = (e) => {
