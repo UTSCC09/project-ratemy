@@ -13,8 +13,7 @@ const Home = () => {
   const [user, setUser] = useState(null);
   useEffect(() => {
     try {
-      fetch("http://localhost:5000/api/user", 
-      {
+      fetch("http://localhost:5000/api/user", {
         credentials: "include",
       })
         .then((res) => res.json())
@@ -27,13 +26,11 @@ const Home = () => {
           console.log(data);
           setUser(data);
         });
-
     } catch (err) {
       console.error(err);
       setUser(null);
     }
-  }
-  , []);
+  }, []);
   useEffect(() => {
     try {
       fetch(
@@ -53,18 +50,21 @@ const Home = () => {
 
   return (
     <div className="mx-auto text-center mt-4">
-      <div className="flex align-middle justify-end space-x-3 max-w-full font-bold mx-4">        
+      <div className="flex align-middle justify-end space-x-3 max-w-full font-bold mx-4">
         {user ? (
           <a href="http://localhost:5000/api/auth/logout">
-          <div className="hover:text-purple-700 text-black">{user.displayName}, Logout</div>
+            <div className="hover:text-purple-700 text-black">
+              {user.displayName}, Logout
+            </div>
           </a>
-          
         ) : (
           <a href="http://localhost:5000/api/auth/login">
-          <div className="hover:text-purple-700 text-black">Sign In/Sign Up</div>
+            <div className="hover:text-purple-700 text-black">
+              Sign In/Sign Up
+            </div>
           </a>
         )}
-        </div>      
+      </div>
       <div className="text-9xl font-bold  mt-36">
         Rate<span className="text-purple-700">My</span>
       </div>
@@ -92,7 +92,7 @@ const Home = () => {
               <button
                 key={course._id}
                 onClick={() => {
-                  navigate('/course', { state: {courseId: course._id}});
+                  navigate("/course", { state: { courseId: course._id } });
                 }}
                 className="font-bold text-2xl hover:text-black hover:bg-gray-200"
               >
