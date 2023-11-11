@@ -71,24 +71,25 @@ const CoursePage = () => {
         }
     }, [pageIndex, courseId]);
 
-    useEffect(() => {
-        try {
-            fetch(
-                "http://localhost:5000/api/reviews/" +
-                courseId +
-                "?page=" +
-                pageIndex +
-                "&limit=" +
-                limit
-            )
-                .then((res) => res.json())
-                .then((data) => {
-                    setReviews(data);
-                });
-        } catch (err) {
-            console.error(err);
-        }
-    }, []);
+  useEffect(() => {
+    try {
+      fetch(
+        "http://localhost:5000/api/reviews/" +
+          courseId +
+          "?page=" +
+          pageIndex +
+          "&limit=" +
+          limit
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setReviews(data.reviews);
+          setMaxPage(data.maxPage);
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  }, [pageIndex, courseId]);
 
     return (
         <div className="px-6 my-36 max-w-4xl mx-auto space-y-5">
