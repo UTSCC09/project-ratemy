@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Rating from "@mui/material/Rating";
 import AddReviewForm from "../components/AddReviewForm";
+import BarChart from "../components/BarChart";
 // Citation: rating component https://mui.com/material-ui/react-rating/
 
 const ratingsMappings = {
@@ -21,8 +22,23 @@ const CoursePage = () => {
     const [course, setCourse] = useState([]);
     const [reviews, setReviews] = useState([]);
     const [avgRatings, setAvgRatings] = useState([]);
+    const [totalsRatings, setTotalsRatings] = useState({});
     let pageIndex = 0;
     const limit = 10;
+
+    useEffect(() => {
+        try {
+            fetch("http://localhost:5000/api/reviews/totals/" + courseId)
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log(data);
+                    setTotalsRatings(data);
+                });
+        } catch (err) {
+            console.error(err);
+        }
+    }, [reviews]);
+
 
     // an empty deps array -> only runs once on initial render
     useEffect(() => {
@@ -73,7 +89,13 @@ const CoursePage = () => {
         <div className="px-6 my-36 max-w-4xl mx-auto space-y-5">
             <div className="text-5xl font-bold">{course.code}</div>
             <div className="text-2xl font-semibold text-gray-600">{course.name}</div>
-
+            <div>
+                <h1>React Chart.js Example</h1>
+                {totalsRatings["totals"] ? (
+                    <BarChart data={totalsRatings["totals"]} />
+                ) : (
+                        <p>No data available</p>
+                    )}            </div>
 
             <div>
                 {Object.keys(avgRatings).map((ratingKey) => {
