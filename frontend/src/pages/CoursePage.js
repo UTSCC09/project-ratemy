@@ -7,6 +7,9 @@ import AddReviewForm from "../components/AddReviewForm";
 import BarChart from "../components/BarChart";
 // Citation: rating component https://mui.com/material-ui/react-rating/
 
+import Chart from "chart.js/auto";
+import { CategoryScale } from "chart.js";
+Chart.register(CategoryScale);
 const ratingsMappings = {
     difficulty: "Difficulty of content",
     quality_of_teaching: "Quality of teaching",
@@ -90,7 +93,6 @@ const CoursePage = () => {
             <div className="text-5xl font-bold">{course.code}</div>
             <div className="text-2xl font-semibold text-gray-600">{course.name}</div>
             <div>
-                <h1>React Chart.js Example</h1>
                 {totalsRatings["totals"] ? (
                     <BarChart data={totalsRatings["totals"]} />
                 ) : (
