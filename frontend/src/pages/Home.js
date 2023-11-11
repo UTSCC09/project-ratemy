@@ -8,9 +8,10 @@ const Home = () => {
   const navigate = useNavigate();
 
   const [courses, setCourses] = useState([]);
-  let pageIndex = 0;
-  const limit = 10;
+  const [pageIndex, setPageIndex] = useState(0);
+  const limit = 5;
   const [user, setUser] = useState(null);
+  const [lastPage, setLastPage] = useState(false);
   useEffect(() => {
     try {
       fetch("http://localhost:5000/api/user", {
@@ -31,6 +32,7 @@ const Home = () => {
       setUser(null);
     }
   }, []);
+
   useEffect(() => {
     try {
       fetch(
@@ -42,6 +44,7 @@ const Home = () => {
         .then((res) => res.json())
         .then((data) => {
           setCourses(data);
+          setLastPage(data.length < limit);
         });
     } catch (err) {
       console.error(err);
@@ -80,7 +83,7 @@ const Home = () => {
             onClick={() => {
               navigate("/add-course");
             }}
-            className="rounded-xl px-2 py-3 w-1/6
+            className="rounded-xl px-2 py-3 w-fill
           bg-purple-500 text-white font-bold hover:bg-purple-700"
           >
             Add Course
@@ -103,14 +106,18 @@ const Home = () => {
         </div>
         <div className="flex flex-row-reverse justify-between">
           <button
-            className="rounded-xl px-2 py-3 w-1/6
+            className="rounded-xl px-2 py-3 w-fit
           bg-purple-400 text-white font-bold hover:bg-purple-700"
+            onClick={() => setPageIndex((prev) => prev + 1)}
+            disabled={lastPage}
           >
             Next
           </button>
           <button
-            className="rounded-xl px-2 py-3 w-1/6
+            className="rounded-xl px-2 py-3 w-fit
           bg-purple-400 text-white font-bold hover:bg-purple-700"
+            onClick={() => setPageIndex((prev) => prev - 1)}
+            disabled={pageIndex === 0}
           >
             Prev
           </button>
