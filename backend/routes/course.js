@@ -27,17 +27,24 @@ module.exports.post = async (req, res) => {
 module.exports.getAll = async (req, res) => {
   let page = req.query.page || 0;
   const limit = req.query.limit || 10;
+  let maxPage = 0;
 
   page = Math.max(0, page);
   const numCourses = await db.models.course.countDocuments();
-  const maxPage = Math.ceil(numCourses / limit) - 1;
+
+  if (numCourses === 0) {
+    maxPage = 0;
+  } else {
+    maxPage = Math.ceil(numCourses / limit) - 1;
+  }
+
   page = Math.min(page, maxPage);
 
   const courses = await db.models.course
     .find()
     .skip(page * limit)
     .limit(limit);
-  return res.json(courses);
+  return res.json({ courses, maxPage: maxPage + 1 });
 };
 module.exports.get = async (req, res) => {
   const id = req.params.id;

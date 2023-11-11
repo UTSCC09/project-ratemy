@@ -21,9 +21,9 @@ const CoursePage = () => {
     const [course, setCourse] = useState([]);
     const [reviews, setReviews] = useState([]);
     const [avgRatings, setAvgRatings] = useState([]);
-    let pageIndex = 0;
-    const limit = 10;
-
+    const [pageIndex, setPageIndex] = useState(0);
+    const [maxPage, setMaxPage] = useState(0);
+    const limit = 5;
     // an empty deps array -> only runs once on initial render
     useEffect(() => {
         try {
@@ -49,6 +49,27 @@ const CoursePage = () => {
             console.error(err);
         }
     }, [reviews]);
+    useEffect(() => {
+        try {
+            fetch(
+                "http://localhost:5000/api/reviews/" +
+                courseId +
+                "?page=" +
+                pageIndex +
+                "&limit=" +
+                limit
+            )
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log(data);
+                    console.log(pageIndex);
+                    setReviews(data.reviews);
+                    setMaxPage(data.maxPage);
+                });
+        } catch (err) {
+            console.error(err);
+        }
+    }, [pageIndex, courseId]);
 
     useEffect(() => {
         try {
@@ -94,38 +115,57 @@ const CoursePage = () => {
                 setReviews={setReviews}
                 reviews={reviews}
             />
-            <div className="space-y-5">
-                {reviews.map((rev) => {
-                    return (
-                        <div
-                            key={rev._id}
-                            className="font-bold hover:text-black hover:bg-gray-200 flex justify-between text-base p-5 rounded-xl bg-slate-50 space-x-5"
-                        >
-                            <div className="w-4/6">
-                                <div>Review</div>
-                                <div>
-                                    Professor:{" "}
-                                    <span className="font-normal"> {rev.professor}</span>
-                                </div>
-                                <div className="font-normal">{rev.review}</div>
+        <div className="space-y-5">
+            {reviews.map((rev) => {
+                return (
+                    <div
+                        key={rev._id}
+                        className="font-bold hover:text-black hover:bg-gray-200 flex justify-between text-base p-5 rounded-xl bg-slate-50 space-x-5"
+                    >
+                        <div className="w-4/6">
+                            <div>Review</div>
+                            <div>
+                                Professor:{" "}
+                                <span className="font-normal"> {rev.professor}</span>
                             </div>
-
-                            <div className="flex flex-col flex-wrap justify-center align-center w-2/6">
-                                {Object.keys(rev.rating).map((ratingKey) => {
-                                    return (
-                                        <div key={rev._id + ratingKey}>
-                                            <div>{ratingsMappings[ratingKey]}</div>
-                                            <Rating value={rev.rating[ratingKey]} readOnly />
-                                        </div>
-                                    );
-                                })}
-                            </div>
+                            <div className="font-normal">{rev.review}</div>
                         </div>
-                    );
-                })}
-            </div>
+
+                        <div className="flex flex-col flex-wrap justify-center align-center w-2/6">
+                            {Object.keys(rev.rating).map((ratingKey) => {
+                                return (
+                                    <div key={rev._id + ratingKey}>
+                                        <div>{ratingsMappings[ratingKey]}</div>
+                                        <Rating value={rev.rating[ratingKey]} readOnly />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                );
+            })}
         </div>
-    );
+
+      <div className="flex flex-row-reverse justify-between">
+        <button
+          className="rounded-xl px-2 py-3 w-fit
+          bg-purple-400 text-white font-bold hover:bg-purple-700"
+          onClick={() => setPageIndex((prev) => prev + 1)}
+          disabled={maxPage - 1 === pageIndex}
+        >
+          Next
+        </button>
+        <button
+          className="rounded-xl px-2 py-3 w-fit
+          bg-purple-400 text-white font-bold hover:bg-purple-700"
+          onClick={() => setPageIndex((prev) => prev - 1)}
+          disabled={pageIndex === 0}
+        >
+          Prev
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default CoursePage;

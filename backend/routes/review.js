@@ -64,6 +64,7 @@ exports.getReviews = async (req, res) => {
 exports.getCourseReviews = async (req, res) => {
     let page = req.query.page || 0;
     const limit = req.query.limit || 10;
+    let maxPage = 0;
 
     const courseId = req.params.id;
     if (courseId == null) {
@@ -75,14 +76,18 @@ exports.getCourseReviews = async (req, res) => {
             .find({ course_id: new mongoose.Types.ObjectId(courseId) })
             .countDocuments();
 
-        const maxPage = Math.ceil(numReviews / limit) - 1;
+        if (numReviews === 0) {
+            maxPage = 0;
+        } else {
+            maxPage = Math.ceil(numReviews / limit) - 1;
+        }
         page = Math.min(page, maxPage);
 
         const reviews = await db.models.review
             .find({ course_id: new mongoose.Types.ObjectId(courseId) })
             .skip(page * limit)
             .limit(limit);
-        return res.status(200).json(reviews);
+        return res.status(200).json({ reviews, maxPage: maxPage + 1 });
     } catch (err) {
         return res.status(500).json({ error: err.message });
     }

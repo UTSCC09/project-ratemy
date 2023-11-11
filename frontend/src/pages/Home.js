@@ -11,7 +11,7 @@ const Home = () => {
   const [pageIndex, setPageIndex] = useState(0);
   const limit = 5;
   const [user, setUser] = useState(null);
-  const [lastPage, setLastPage] = useState(false);
+  const [maxPage, setMaxPage] = useState(0);
   useEffect(() => {
     try {
       fetch("http://localhost:5000/api/user", {
@@ -43,8 +43,8 @@ const Home = () => {
       )
         .then((res) => res.json())
         .then((data) => {
-          setCourses(data);
-          setLastPage(data.length < limit);
+          setCourses(data.courses);
+          setMaxPage(data.maxPage);
         });
     } catch (err) {
       console.error(err);
@@ -109,7 +109,7 @@ const Home = () => {
             className="rounded-xl px-2 py-3 w-fit
           bg-purple-400 text-white font-bold hover:bg-purple-700"
             onClick={() => setPageIndex((prev) => prev + 1)}
-            disabled={lastPage}
+            disabled={maxPage - 1 === pageIndex}
           >
             Next
           </button>
