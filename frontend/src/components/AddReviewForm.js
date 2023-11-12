@@ -31,6 +31,7 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     const bodyObject = {
       course_id: courseId,
       rating: rating,
@@ -90,7 +91,7 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
               key={ratingKey}
               className="flex flex-col justify-center items-center border hover:border-purple-700 rounded-xl p-5 gap-3 my-3 w-4/6 mx-auto"
             >
-              <div className="text-lg">{ratingsMappings[ratingKey]}</div>
+              <span className="text-lg flex justify-between">{ratingsMappings[ratingKey]}
               <Rating
                 value={rating[ratingKey]}
                 onChange={(event, newValue) => {
@@ -100,6 +101,7 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
                 }}
                 name="simple-controlled"
               />
+              </span>
             </div>
           );
         })}
