@@ -45,10 +45,10 @@ const AddCourse = () => {
             ).toUpperCase(),
           }),
         })
-        .then((res) => res.json())
-        .then((data) => {
-          navigate('/course', { state: {courseId: data._id}});
-        });
+          .then((res) => res.json())
+          .then((data) => {
+            navigate("/course", { state: { courseId: data._id } });
+          });
       } catch (err) {
         console.error("Error sending POST request:", err);
       }
@@ -144,7 +144,7 @@ const AddCourse = () => {
         </div>
         <div className="flex space-x-5 font-semibold">
           <button
-            className="border-2 border-gray-400 rounded-xl px-2 py-3 w-1/6 hover:bg-gray-200"
+            className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit hover:bg-gray-200"
             onClick={() => {
               navigate("/");
             }}
@@ -153,7 +153,7 @@ const AddCourse = () => {
           </button>
           <button
             disabled={buttonDisabled}
-            className="rounded-xl px-2 py-3 w-1/6
+            className="rounded-xl px-2 py-3 w-fit
             bg-purple-500 text-white font-bold hover:bg-purple-700 disabled:bg-purple-300 disabled:border-purple-300"
             type="submit"
           >
