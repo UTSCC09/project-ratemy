@@ -19,7 +19,7 @@ module.exports.post = async (req, res) => {
   if (existingCourse) {
     return res.status(400).json({ error: "Course already exists" });
   } else {
-    const course = new db.models.course({ name: req.body.name, code: code });
+    const course = new db.models.course({ name: req.body.name, code: code, date: Date.now() });
     const insertedCourse = await course.save();
     return res.status(200).json(insertedCourse);
   }
@@ -42,6 +42,7 @@ module.exports.getAll = async (req, res) => {
 
   const courses = await db.models.course
     .find()
+    .sort({ date: -1 })
     .skip(page * limit)
     .limit(limit);
   return res.json({ courses, maxPage: maxPage + 1 });
