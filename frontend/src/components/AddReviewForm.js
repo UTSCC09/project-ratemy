@@ -1,6 +1,6 @@
 // Citation: icons from https://react-icons.github.io/react-icons/search?q=plus
 // import { AiOutlinePlus } from "react-icons/ai";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Rating from "@mui/material/Rating";
 
 const ratingsMappings = {
@@ -26,17 +26,34 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
     workload: 0,
   });
 
-  let pageIndex = 0;
-  const limit = 10;
+  const [email, setEmail] = useState(null);
+
+  useEffect(() => {
+    try {
+      fetch("http://localhost:5000/api/user", {
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.error) {
+            console.error(data.error);
+          } else {
+            setEmail(data.emails[0].value);
+          }
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const bodyObject = {
       course_id: courseId,
       rating: rating,
       review: revData.review,
-      email: "123@test.com", //Need a valid email for this
+      email: email,
       professor: revData.prof,
     };
     try {
@@ -46,20 +63,18 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(bodyObject),
-      })
-      .then((res) => {
-          if (res.status == 200) {
-          let data = res.json()
-          .then((data) => {
-            setReviews((reviews => [...reviews, data]));
-          })
+      }).then((res) => {
+        if (res.status === 200) {
+          res.json().then((data) => {
+            setReviews((reviews) => [...reviews, data]);
+          });
         }
       });
 
       setRevData({
         prof: "",
         review: "",
-      })
+      });
 
       setRating({
         difficulty: 0,
@@ -71,7 +86,6 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
     } catch (err) {
       console.error("Error sending POST request: ", err);
     }
-
   };
 
   const handleChange = (e) => {
@@ -91,16 +105,17 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
               key={ratingKey}
               className="flex flex-col justify-center items-center border hover:border-purple-700 rounded-xl p-5 gap-3 my-3 w-4/6 mx-auto"
             >
-              <span className="text-lg flex justify-between">{ratingsMappings[ratingKey]}
-              <Rating
-                value={rating[ratingKey]}
-                onChange={(event, newValue) => {
-                  var rev = { ...rating };
-                  rev[ratingKey] = newValue;
-                  setRating(rev);
-                }}
-                name="simple-controlled"
-              />
+              <span className="text-lg flex justify-between">
+                {ratingsMappings[ratingKey]}
+                <Rating
+                  value={rating[ratingKey]}
+                  onChange={(event, newValue) => {
+                    var rev = { ...rating };
+                    rev[ratingKey] = newValue;
+                    setRating(rev);
+                  }}
+                  name="simple-controlled"
+                />
               </span>
             </div>
           );
