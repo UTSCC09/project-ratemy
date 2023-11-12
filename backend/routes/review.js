@@ -143,7 +143,9 @@ exports.patchReview = async (req, res) => {
         if (!existingReview) {
             return res.status(404).json({ error: 'Review not found.' });
         }
-        if (req.email !== existingReview.email) {
+        console.log(existingReview.email);
+        console.log(req.body.email)
+        if (req.body.email !== existingReview.email) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
         const updatedReview = await db.models.review.findOneAndUpdate(
@@ -218,7 +220,7 @@ exports.deleteReview = async (req, res) => {
         if (!existingReview) {
             return res.status(404).json({ error: 'Review not found.' });
         }
-        if (req.email !== existingReview.email) {
+        if (req.body.email !== existingReview.email) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
         const deletedReview = await db.models.review.findByIdAndDelete(reviewId);
