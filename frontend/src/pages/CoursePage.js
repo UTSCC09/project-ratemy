@@ -30,6 +30,8 @@ const CoursePage = () => {
   const [maxPage, setMaxPage] = useState(0);
   const limit = 5;
   const [user, setUser] = useState(null);
+  const [editPressed, setEditPressed] = useState(true);
+  const [editedIput, setEditedInput] = useState("");
 
   useEffect(() => {
     try {
@@ -109,26 +111,6 @@ const CoursePage = () => {
     getData();
   }, [pageIndex, courseId]);
 
-  //   useEffect(() => {
-  //     try {
-  //       fetch(
-  //         "http://localhost:5000/api/reviews/" +
-  //           courseId +
-  //           "?page=" +
-  //           pageIndex +
-  //           "&limit=" +
-  //           limit
-  //       )
-  //         .then((res) => res.json())
-  //         .then((data) => {
-  //           setReviews(data.reviews);
-  //           setMaxPage(data.maxPage);
-  //         });
-  //     } catch (err) {
-  //       console.error(err);
-  //     }
-  //   }, [pageIndex, courseId]);
-
   const handleDelete = async (review) => {
     try {
       await fetch("http://localhost:5000/api/reviews/" + review._id, {
@@ -184,7 +166,14 @@ const CoursePage = () => {
                   Professor:{" "}
                   <span className="font-normal"> {rev.professor}</span>
                 </div>
-                <div className="font-normal">{rev.review}</div>
+                <textarea
+                  className={`font-normal w-full h-2/3 rounded-xl  ${
+                    !editPressed ? "bg-white p-2" : "bg-inherit"
+                  }`}
+                  onChange={(e) => setEditedInput(e.target.value)}
+                  defaultValue={rev.review}
+                  disabled={editPressed}
+                ></textarea>
               </div>
 
               <div className="flex flex-col flex-wrap justify-center align-center w-2/6">
@@ -199,7 +188,20 @@ const CoursePage = () => {
                 {rev.email === user.emails[0].value && (
                   <div className="flex space-x-3">
                     <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-black hover:border-black">
-                      <button>Edit Review</button>
+                      {editPressed ? (
+                        <button onClick={() => setEditPressed(false)}>
+                          Edit Review
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            console.log("Saved: ", editedIput);
+                            return setEditPressed(true);
+                          }}
+                        >
+                          Save Edit
+                        </button>
+                      )}
                     </div>
                     <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-red-500 hover:border-red-500">
                       <button onClick={() => handleDelete(rev)}>
