@@ -38,7 +38,7 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
           if (data.error) {
             console.error(data.error);
           } else {
-            setEmail(data.emails[0].value);
+            setEmail(data);
           }
         });
     } catch (err) {
@@ -53,7 +53,7 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
       course_id: courseId,
       rating: rating,
       review: revData.review,
-      email: email,
+      email: email.emails[0].value,
       professor: revData.prof,
     };
     try {
@@ -98,7 +98,7 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="flex flex-col ">
+      <div className="flex flex-col">
         {Object.keys(rating).map((ratingKey) => {
           return (
             <div
