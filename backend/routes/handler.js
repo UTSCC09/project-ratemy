@@ -34,6 +34,8 @@ router.post("/api/reviews", review.postReview);
 router.get("/api/reviews/all", review.getReviews);
 router.get("/api/reviews/:id", review.getCourseReviews);
 router.get("/api/reviews/averages/:id", review.getRatingAverages);
+router.patch("/api/reviews/:id", review.patchReview);
+router.delete("/api/reviews/:id", review.deleteReview);
 router.post("/api/reviews", review.postReview);
 router.get("/api/reviews/totals/:id", review.getTotalRatings);
 router.get("/api/auth/login", loginAuth, auth.login);
