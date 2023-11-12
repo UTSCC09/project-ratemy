@@ -1,5 +1,5 @@
 const db = require("../db");
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 // this endpoint takes
 // 'course_id', 'rating' = { 'difficulty', 'usefulness_real_world', 'staff_responsiveness', 'quality_of_teaching', 'workload' }, 'review', 'professor'
@@ -62,22 +62,36 @@ exports.getReviews = async (req, res) => {
 
 // takes page and limit as query params
 exports.getCourseReviews = async (req, res) => {
-    const page = req.query.page || 0;
+    let page = req.query.page || 0;
     const limit = req.query.limit || 10;
+    let maxPage = 0;
+
     const courseId = req.params.id;
     if (courseId == null) {
         return res.status(400).json({ error: "Missing course id." });
     }
     try {
+        page = Math.max(0, page);
+        const numReviews = await db.models.review
+            .find({ course_id: new mongoose.Types.ObjectId(courseId) })
+            .countDocuments();
+
+        if (numReviews === 0) {
+            maxPage = 0;
+        } else {
+            maxPage = Math.ceil(numReviews / limit) - 1;
+        }
+        page = Math.min(page, maxPage);
+
         const reviews = await db.models.review
             .find({ course_id: new mongoose.Types.ObjectId(courseId) })
             .skip(page * limit)
             .limit(limit);
-        return res.status(200).json(reviews);
+        return res.status(200).json({ reviews, maxPage: maxPage + 1 });
     } catch (err) {
         return res.status(500).json({ error: err.message });
     }
-}
+};
 
 exports.getRatingAverages = async (req, res) => {
     const courseId = req.params.id;

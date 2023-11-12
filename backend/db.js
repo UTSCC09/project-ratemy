@@ -31,6 +31,7 @@ const createSchemas = () => {
   const user = mongoose.model("user", userSchema);
   models.user = user;
   const courseSchema = new mongoose.Schema({
+    date: { type: Date, required: true },
     name: { type: String, required: true },
     code: { type: String, required: true },
     professorName: [String],
