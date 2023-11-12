@@ -85,6 +85,7 @@ exports.getRatingAverages = async (req, res) => {
         return res.status(400).json({ error: 'Missing course id.' })
     }
     try {
+        // Cite: https://docs.mongodb.com/manual/aggregation/
         const averageRating = await db.models.review.aggregate([
             { $match: { course_id: courseId } },
             {
@@ -125,7 +126,7 @@ exports.getTotalRatings = async (req, res) => {
         for (let field of fields) {
             const short = field.split('.').pop();
             const total = await db.models.review.aggregate([
-                // TODO: add citation
+                // Citation: https://docs.mongodb.com/manual/aggregation/
                 { $match: { course_id: courseId } },
                 {
                     $group: {
