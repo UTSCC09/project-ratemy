@@ -99,6 +99,7 @@ exports.getRatingAverages = async (req, res) => {
         return res.status(400).json({ error: 'Missing course id.' })
     }
     try {
+        // Cite: https://docs.mongodb.com/manual/aggregation/
         const averageRating = await db.models.review.aggregate([
             { $match: { course_id: courseId } },
             {
@@ -128,3 +129,51 @@ exports.getRatingAverages = async (req, res) => {
     }
 }
 
+exports.getTotalRatings = async (req, res) => {
+    const courseId = req.params.id;
+    if (courseId == null) {
+        return res.status(400).json({ error: 'Missing course id.' })
+    }
+    let totals = {};
+    const fields = ['$rating.difficulty', '$rating.usefulness_real_world', '$rating.workload', '$rating.staff_responsiveness', '$rating.quality_of_teaching']
+    try {
+        for (let field of fields) {
+            const short = field.split('.').pop();
+            const total = await db.models.review.aggregate([
+                // Citation: https://docs.mongodb.com/manual/aggregation/
+                { $match: { course_id: courseId } },
+                {
+                    $group: {
+                        _id: field,
+                        count: { $sum: 1 },
+                    },
+                },
+                {
+                    $group: {
+                        _id: null,
+                        [short]: {
+                            $push: {
+                                k: { $toString: '$_id' },
+                                v: '$count',
+                            },
+                        },
+                    },
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        [short]: { $arrayToObject: `$${short}` },
+                    },
+                },
+            ]);
+            if (total.length > 0) {
+                const result = total[0][short]
+                totals[short] = result;
+            }
+        }
+        return res.status(200).json({ totals });
+    }
+    catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+}

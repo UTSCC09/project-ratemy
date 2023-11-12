@@ -35,6 +35,7 @@ router.get("/api/reviews/all", review.getReviews);
 router.get("/api/reviews/:id", review.getCourseReviews);
 router.get("/api/reviews/averages/:id", review.getRatingAverages);
 router.post("/api/reviews", review.postReview);
+router.get("/api/reviews/totals/:id", review.getTotalRatings);
 router.get("/api/auth/login", loginAuth, auth.login);
 router.get("/api/auth/callback", auth.callback);
 router.get("/api/auth/logout", auth.logout);
