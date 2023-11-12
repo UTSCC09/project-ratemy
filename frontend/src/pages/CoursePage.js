@@ -196,7 +196,7 @@ const CoursePage = () => {
                     </div>
                   );
                 })}
-                {rev.email === user.emails[0].value && (
+                {user && rev.email === user.emails[0].value && (
                   <div className="flex space-x-3">
                     <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-black hover:border-black">
                       <button>Edit Review</button>
