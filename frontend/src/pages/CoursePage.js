@@ -41,7 +41,7 @@ const CoursePage = () => {
     } catch (err) {
       console.error(err);
     }
-  }, [reviews]);
+  }, [reviews, courseId]);
   // an empty deps array -> only runs once on initial render
   useEffect(() => {
     try {
@@ -83,7 +83,8 @@ const CoursePage = () => {
     } catch (err) {
       console.error(err);
     }
-  }, [reviews]);
+  }, [reviews, courseId]);
+
   useEffect(() => {
     try {
       fetch(
@@ -153,46 +154,49 @@ const CoursePage = () => {
         reviews={reviews}
       />
       <div className="space-y-5">
-        {reviews.map((rev) => {
-          return (
-            <div
-              key={rev._id}
-              className="font-bold hover:text-black hover:bg-gray-200 flex justify-between text-base p-5 rounded-xl bg-slate-50 space-x-5"
-            >
-              <div className="w-3/6">
-                <div>Review</div>
-                <div>
-                  Professor:{" "}
-                  <span className="font-normal"> {rev.professor}</span>
+        {reviews
+          .slice(0)
+          .reverse()
+          .map((rev) => {
+            return (
+              <div
+                key={rev._id}
+                className="font-bold hover:text-black hover:bg-gray-200 flex justify-between text-base p-5 rounded-xl bg-slate-50 space-x-5"
+              >
+                <div className="w-4/6">
+                  <div>Review</div>
+                  <div>
+                    Professor:{" "}
+                    <span className="font-normal"> {rev.professor}</span>
+                  </div>
+                  <div className="font-normal">{rev.review}</div>
                 </div>
-                <div className="font-normal">{rev.review}</div>
-              </div>
 
-              <div className="flex flex-col flex-wrap justify-center align-center w-2/6">
-                {Object.keys(rev.rating).map((ratingKey) => {
-                  return (
-                    <div key={rev._id + ratingKey}>
-                      <div>{ratingsMappings[ratingKey]}</div>
-                      <Rating value={rev.rating[ratingKey]} readOnly />
-                    </div>
-                  );
-                })}
-                <div className="flex space-x-3">
-                  {rev.email === user.emails[0].value && (
-                    <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-black hover:border-black">
-                      <button>Edit Review</button>
-                    </div>
-                  )}
-                  {rev.email === user.emails[0].value && (
-                    <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-red-500 hover:border-red-500">
-                      <button>Delete Review</button>
-                    </div>
-                  )}
+                <div className="flex flex-col flex-wrap justify-center align-center w-2/6">
+                  {Object.keys(rev.rating).map((ratingKey) => {
+                    return (
+                      <div key={rev._id + ratingKey}>
+                        <div>{ratingsMappings[ratingKey]}</div>
+                        <Rating value={rev.rating[ratingKey]} readOnly />
+                      </div>
+                    );
+                  })}
+                  <div className="flex space-x-3">
+                    {rev.email === user.emails[0].value && (
+                      <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-black hover:border-black">
+                        <button>Edit Review</button>
+                      </div>
+                    )}
+                    {rev.email === user.emails[0].value && (
+                      <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-red-500 hover:border-red-500">
+                        <button>Delete Review</button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
       </div>
 
       {reviews.length === 0 ? (
