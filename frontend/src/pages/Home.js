@@ -8,13 +8,13 @@ const Home = () => {
   const navigate = useNavigate();
 
   const [courses, setCourses] = useState([]);
-  let pageIndex = 0;
-  const limit = 10;
+  const [pageIndex, setPageIndex] = useState(0);
+  const limit = 5;
   const [user, setUser] = useState(null);
+  const [maxPage, setMaxPage] = useState(0);
   useEffect(() => {
     try {
-      fetch("http://localhost:5000/api/user", 
-      {
+      fetch("http://localhost:5000/api/user", {
         credentials: "include",
       })
         .then((res) => res.json())
@@ -27,13 +27,12 @@ const Home = () => {
           console.log(data);
           setUser(data);
         });
-
     } catch (err) {
       console.error(err);
       setUser(null);
     }
-  }
-  , []);
+  }, []);
+
   useEffect(() => {
     try {
       fetch(
@@ -44,7 +43,8 @@ const Home = () => {
       )
         .then((res) => res.json())
         .then((data) => {
-          setCourses(data);
+          setCourses(data.courses);
+          setMaxPage(data.maxPage);
         });
     } catch (err) {
       console.error(err);
@@ -53,18 +53,21 @@ const Home = () => {
 
   return (
     <div className="mx-auto text-center mt-4">
-      <div className="flex align-middle justify-end space-x-3 max-w-full font-bold mx-4">        
+      <div className="flex align-middle justify-end space-x-3 max-w-full font-bold mx-4">
         {user ? (
           <a href="http://localhost:5000/api/auth/logout">
-          <div className="hover:text-purple-700 text-black">{user.displayName}, Logout</div>
+            <div className="hover:text-purple-700 text-black">
+              {user.displayName}, Logout
+            </div>
           </a>
-          
         ) : (
           <a href="http://localhost:5000/api/auth/login">
-          <div className="hover:text-purple-700 text-black">Sign In/Sign Up</div>
+            <div className="hover:text-purple-700 text-black">
+              Sign In/Sign Up
+            </div>
           </a>
         )}
-        </div>      
+      </div>
       <div className="text-9xl font-bold  mt-36">
         Rate<span className="text-purple-700">My</span>
       </div>
@@ -80,7 +83,7 @@ const Home = () => {
             onClick={() => {
               navigate("/add-course");
             }}
-            className="rounded-xl px-2 py-3 w-1/6
+            className="rounded-xl px-2 py-3 w-fill
           bg-purple-500 text-white font-bold hover:bg-purple-700"
           >
             Add Course
@@ -92,7 +95,7 @@ const Home = () => {
               <button
                 key={course._id}
                 onClick={() => {
-                  navigate('/course', { state: {courseId: course._id}});
+                  navigate("/course", { state: { courseId: course._id } });
                 }}
                 className="font-bold text-2xl hover:text-black hover:bg-gray-200"
               >
@@ -103,14 +106,18 @@ const Home = () => {
         </div>
         <div className="flex flex-row-reverse justify-between">
           <button
-            className="rounded-xl px-2 py-3 w-1/6
+            className="rounded-xl px-2 py-3 w-fit
           bg-purple-400 text-white font-bold hover:bg-purple-700"
+            onClick={() => setPageIndex((prev) => prev + 1)}
+            disabled={maxPage - 1 === pageIndex}
           >
             Next
           </button>
           <button
-            className="rounded-xl px-2 py-3 w-1/6
+            className="rounded-xl px-2 py-3 w-fit
           bg-purple-400 text-white font-bold hover:bg-purple-700"
+            onClick={() => setPageIndex((prev) => prev - 1)}
+            disabled={pageIndex === 0}
           >
             Prev
           </button>
