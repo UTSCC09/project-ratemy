@@ -85,7 +85,7 @@ const CoursePage = () => {
     }
   }, [reviews, courseId]);
 
-  useEffect(() => {
+  const getData = async () => {
     try {
       fetch(
         "http://localhost:5000/api/reviews/" +
@@ -103,27 +103,45 @@ const CoursePage = () => {
     } catch (err) {
       console.error(err);
     }
-  }, [pageIndex, courseId]);
+  };
 
   useEffect(() => {
+    getData();
+  }, [pageIndex, courseId]);
+
+  //   useEffect(() => {
+  //     try {
+  //       fetch(
+  //         "http://localhost:5000/api/reviews/" +
+  //           courseId +
+  //           "?page=" +
+  //           pageIndex +
+  //           "&limit=" +
+  //           limit
+  //       )
+  //         .then((res) => res.json())
+  //         .then((data) => {
+  //           setReviews(data.reviews);
+  //           setMaxPage(data.maxPage);
+  //         });
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
+  //   }, [pageIndex, courseId]);
+
+  const handleDelete = async (review) => {
     try {
-      fetch(
-        "http://localhost:5000/api/reviews/" +
-          courseId +
-          "?page=" +
-          pageIndex +
-          "&limit=" +
-          limit
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          setReviews(data.reviews);
-          setMaxPage(data.maxPage);
-        });
+      await fetch("http://localhost:5000/api/reviews/" + review._id, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user.emails[0].value }),
+      }).then(() => {
+        getData();
+      });
     } catch (err) {
       console.error(err);
     }
-  }, [pageIndex, courseId]);
+  };
 
   return (
     <div className="px-6 my-36 max-w-4xl mx-auto space-y-5">
@@ -154,49 +172,46 @@ const CoursePage = () => {
         reviews={reviews}
       />
       <div className="space-y-5">
-        {reviews
-          .slice(0)
-          .reverse()
-          .map((rev) => {
-            return (
-              <div
-                key={rev._id}
-                className="font-bold hover:text-black hover:bg-gray-200 flex justify-between text-base p-5 rounded-xl bg-slate-50 space-x-5"
-              >
-                <div className="w-4/6">
-                  <div>Review</div>
-                  <div>
-                    Professor:{" "}
-                    <span className="font-normal"> {rev.professor}</span>
-                  </div>
-                  <div className="font-normal">{rev.review}</div>
+        {reviews.map((rev) => {
+          return (
+            <div
+              key={rev._id}
+              className="font-bold hover:text-black hover:bg-gray-200 flex justify-between text-base p-5 rounded-xl bg-slate-50 space-x-5"
+            >
+              <div className="w-4/6">
+                <div>Review</div>
+                <div>
+                  Professor:{" "}
+                  <span className="font-normal"> {rev.professor}</span>
                 </div>
-
-                <div className="flex flex-col flex-wrap justify-center align-center w-2/6">
-                  {Object.keys(rev.rating).map((ratingKey) => {
-                    return (
-                      <div key={rev._id + ratingKey}>
-                        <div>{ratingsMappings[ratingKey]}</div>
-                        <Rating value={rev.rating[ratingKey]} readOnly />
-                      </div>
-                    );
-                  })}
-                  <div className="flex space-x-3">
-                    {rev.email === user.emails[0].value && (
-                      <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-black hover:border-black">
-                        <button>Edit Review</button>
-                      </div>
-                    )}
-                    {rev.email === user.emails[0].value && (
-                      <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-red-500 hover:border-red-500">
-                        <button>Delete Review</button>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <div className="font-normal">{rev.review}</div>
               </div>
-            );
-          })}
+
+              <div className="flex flex-col flex-wrap justify-center align-center w-2/6">
+                {Object.keys(rev.rating).map((ratingKey) => {
+                  return (
+                    <div key={rev._id + ratingKey}>
+                      <div>{ratingsMappings[ratingKey]}</div>
+                      <Rating value={rev.rating[ratingKey]} readOnly />
+                    </div>
+                  );
+                })}
+                {rev.email === user.emails[0].value && (
+                  <div className="flex space-x-3">
+                    <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-black hover:border-black">
+                      <button>Edit Review</button>
+                    </div>
+                    <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-red-500 hover:border-red-500">
+                      <button onClick={() => handleDelete(rev)}>
+                        Delete Review
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {reviews.length === 0 ? (
