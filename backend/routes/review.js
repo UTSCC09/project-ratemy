@@ -1,3 +1,4 @@
+const e = require("express");
 const db = require("../db");
 const mongoose = require("mongoose");
 
@@ -129,6 +130,36 @@ exports.getRatingAverages = async (req, res) => {
     }
 }
 
+exports.patchReview = async (req, res) => {
+    const reviewId = req.params.id;
+    if (reviewId == null) {
+        return res.status(400).json({ error: 'Missing review id' })
+    }
+
+    const reviewData = req.body;
+    try {
+        const existingReview = await db.models.review.findById(reviewId);
+
+        if (!existingReview) {
+            return res.status(404).json({ error: 'Review not found.' });
+        }
+        console.log(existingReview.email);
+        console.log(req.body.email)
+        if (req.body.email !== existingReview.email) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        const updatedReview = await db.models.review.findOneAndUpdate(
+            { _id: reviewId },
+            reviewData,
+            { new: true }
+        );
+        return res.json(updatedReview);
+    }
+    catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+}
+
 exports.getTotalRatings = async (req, res) => {
     const courseId = req.params.id;
     if (courseId == null) {
@@ -172,6 +203,28 @@ exports.getTotalRatings = async (req, res) => {
             }
         }
         return res.status(200).json({ totals });
+    }
+    catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+}
+
+exports.deleteReview = async (req, res) => {
+    const reviewId = req.params.id;
+    if (reviewId == null) {
+        return res.status(400).json({ error: 'Missing review id' })
+    }
+
+    try {
+        const existingReview = await db.models.review.findById(reviewId);
+        if (!existingReview) {
+            return res.status(404).json({ error: 'Review not found.' });
+        }
+        if (req.body.email !== existingReview.email) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        const deletedReview = await db.models.review.findByIdAndDelete(reviewId);
+        return res.json(deletedReview);
     }
     catch (err) {
         return res.status(500).json({ error: err.message });
