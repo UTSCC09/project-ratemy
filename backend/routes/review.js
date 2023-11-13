@@ -49,17 +49,21 @@ function isRating(x) {
 exports.getReviews = async (req, res) => {
     const page = req.query.page || 0;
     const limit = req.query.limit || 10;
+    const sortField = req.query.sortField || 'date';
+    const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1; 
     try {
         const reviews = await db.models.review
             .find()
-            .sort({ date: -1 })
+            .sort({ [sortField]: sortOrder })
             .skip(page * limit)
             .limit(limit);
+
         return res.status(200).json(reviews);
     } catch (err) {
         return res.status(500).json({ error: err.message });
     }
 };
+
 
 // takes page and limit as query params
 exports.getCourseReviews = async (req, res) => {
@@ -68,9 +72,16 @@ exports.getCourseReviews = async (req, res) => {
     let maxPage = 0;
 
     const courseId = req.params.id;
+
     if (courseId == null) {
         return res.status(400).json({ error: "Missing course id." });
     }
+
+    const sortField = req.query.sortField || 'date';
+    const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
+
+    const professorFilter = req.query.professor ? { professor: req.query.professor } : {};
+
     try {
         page = Math.max(0, page);
         const numReviews = await db.models.review
@@ -85,7 +96,8 @@ exports.getCourseReviews = async (req, res) => {
         page = Math.min(page, maxPage);
 
         const reviews = await db.models.review
-            .find({ course_id: new mongoose.Types.ObjectId(courseId) })
+            .find({ course_id: new mongoose.Types.ObjectId(courseId), ...professorFilter })
+            .sort({ [sortField]: sortOrder })
             .skip(page * limit)
             .limit(limit);
         return res.status(200).json({ reviews, maxPage: maxPage + 1 });
