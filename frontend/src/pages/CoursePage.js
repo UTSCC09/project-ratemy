@@ -157,11 +157,17 @@ const CoursePage = () => {
         })}
       </div>
 
-      <AddReviewForm
-        courseId={courseId}
-        setReviews={setReviews}
-        reviews={reviews}
-      />
+      {user ? (
+        <AddReviewForm
+          courseId={courseId}
+          setReviews={setReviews}
+          reviews={reviews}
+        />
+      ) : (
+        <div className="font-bold text-xl text-center">
+          Sign in to add a review!
+        </div>
+      )}
       <div className="space-y-5">
         {reviews.map((rev) => {
           // setEditedInput(rev.review);
