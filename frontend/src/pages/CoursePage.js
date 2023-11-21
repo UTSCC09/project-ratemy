@@ -31,7 +31,7 @@ const CoursePage = () => {
   const limit = 5;
   const [user, setUser] = useState(null);
   const [editPressed, setEditPressed] = useState(true);
-  const [editedIput, setEditedInput] = useState("");
+  const [editedInput, setEditedInput] = useState("");
 
   useEffect(() => {
     try {
@@ -125,6 +125,15 @@ const CoursePage = () => {
     }
   };
 
+  const handleSaveEdit = () => {
+    setEditPressed(true);
+    if (editedInput !== "") {
+      // console.log(editedInput);
+      // Call the BE to patch the review
+      // setEditedInput("");
+    }
+  };
+
   return (
     <div className="px-6 my-36 max-w-4xl mx-auto space-y-5">
       <div className="text-5xl font-bold">{course.code}</div>
@@ -155,6 +164,7 @@ const CoursePage = () => {
       />
       <div className="space-y-5">
         {reviews.map((rev) => {
+          // setEditedInput(rev.review);
           return (
             <div
               key={rev._id}
@@ -170,8 +180,10 @@ const CoursePage = () => {
                   className={`font-normal w-full h-2/3 rounded-xl  ${
                     !editPressed ? "bg-white p-2" : "bg-inherit"
                   }`}
-                  onChange={(e) => setEditedInput(e.target.value)}
-                  defaultValue={rev.review}
+                  onChange={(e) => {
+                    setEditedInput(e.target.value);
+                  }}
+                  defaultValue={editedInput !== "" ? editedInput : rev.review}
                   disabled={editPressed}
                 ></textarea>
               </div>
@@ -185,7 +197,7 @@ const CoursePage = () => {
                     </div>
                   );
                 })}
-                {rev.email === user.emails[0].value && (
+                {user && rev.email === user.emails[0].value && (
                   <div className="flex space-x-3">
                     <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-black hover:border-black">
                       {editPressed ? (
@@ -193,14 +205,7 @@ const CoursePage = () => {
                           Edit Review
                         </button>
                       ) : (
-                        <button
-                          onClick={() => {
-                            console.log("Saved: ", editedIput);
-                            return setEditPressed(true);
-                          }}
-                        >
-                          Save Edit
-                        </button>
+                        <button onClick={handleSaveEdit}>Save Edit</button>
                       )}
                     </div>
                     <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-red-500 hover:border-red-500">
