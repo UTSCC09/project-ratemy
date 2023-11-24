@@ -125,12 +125,25 @@ const CoursePage = () => {
     }
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async (reviewId) => {
     setEditPressed(true);
     if (editedInput !== "") {
-      // console.log(editedInput);
-      // Call the BE to patch the review
-      // setEditedInput("");
+      try {
+        fetch("http://localhost:5000/api/reviews/" + reviewId, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            review: editedInput,
+            email: user.emails[0].value,
+          }),
+        });
+      } catch (err) {
+        console.error("Error sending POST request: ", err);
+      }
+
+      setEditedInput("");
     }
   };
 
@@ -205,7 +218,9 @@ const CoursePage = () => {
                           Edit Review
                         </button>
                       ) : (
-                        <button onClick={handleSaveEdit}>Save Edit</button>
+                        <button onClick={() => handleSaveEdit(rev._id)}>
+                          Save Edit
+                        </button>
                       )}
                     </div>
                     <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-red-500 hover:border-red-500">
