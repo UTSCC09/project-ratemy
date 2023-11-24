@@ -127,6 +127,7 @@ const CoursePage = () => {
 
   const handleSaveEdit = async (reviewId) => {
     setEditPressed(true);
+
     if (editedInput !== "") {
       try {
         fetch("http://localhost:5000/api/reviews/" + reviewId, {
