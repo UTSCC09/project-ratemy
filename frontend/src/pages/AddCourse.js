@@ -29,29 +29,29 @@ const AddCourse = () => {
     if (!numRegex.test(courseInfo.num)) setNumError("Enter only numbers");
     else setNumError("");
 
-    if (!deptError && !levelError && !numError) {
-      try {
-        fetch("http://localhost:5000/api/courses", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: courseInfo.name,
-            code: (
-              courseInfo.dept +
-              courseInfo.level +
-              courseInfo.num
-            ).toUpperCase(),
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
+    try {
+      fetch("http://localhost:5000/api/courses", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: courseInfo.name,
+          code: (
+            courseInfo.dept +
+            courseInfo.level +
+            courseInfo.num
+          ).toUpperCase(),
+        }),
+      }).then((res) => {
+        if (res.status === 200) {
+          res.json().then((data) => {
             navigate("/course", { state: { courseId: data._id } });
           });
-      } catch (err) {
-        console.error("Error sending POST request:", err);
-      }
+        }
+      });
+    } catch (err) {
+      console.error("Error sending POST request:", err);
     }
   };
 
