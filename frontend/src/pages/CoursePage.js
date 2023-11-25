@@ -5,8 +5,14 @@ import { useLocation } from "react-router-dom";
 import Rating from "@mui/material/Rating";
 import AddReviewForm from "../components/AddReviewForm";
 import BarChart from "../components/BarChart";
+//Citation: https://mui.com/material-ui/react-accordion/
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import AddIcon from "@mui/icons-material/Add";
 // Citation: rating component https://mui.com/material-ui/react-rating/
-
 import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";
 Chart.register(CategoryScale);
@@ -146,38 +152,92 @@ const CoursePage = () => {
   return (
     <div className="px-6 my-36 max-w-4xl mx-auto space-y-5">
       <div className="text-5xl font-bold">{course.code}</div>
-      <div className="text-2xl font-semibold text-gray-600">{course.name}</div>
+      <div className="text-3xl font-bold text-purple-700">{course.name}</div>
+      <div></div>
       <div>
         {totalsRatings["totals"] ? (
-          <BarChart data={totalsRatings["totals"]} />
+          <div>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+              >
+                <Typography>
+                  <div className="text-xl font-bold">Overview of Ratings</div>
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography>
+                  <BarChart data={totalsRatings["totals"]} />
+                </Typography>
+              </AccordionDetails>
+            </Accordion>
+          </div>
         ) : (
           <p>No data available</p>
-        )}{" "}
+        )}
       </div>
 
       <div>
-        {Object.keys(avgRatings).map((ratingKey) => {
-          return (
-            <span key={ratingKey}>
-              {ratingsMappings[ratingKey]}
-              <Rating value={avgRatings[ratingKey]} precision={0.5} readOnly />
-            </span>
-          );
-        })}
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+          >
+            <Typography>
+              <div className="text-xl font-bold">Overall Average Ratings</div>
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+              <div className="flex flex-col justify-center items-center space-y-5">
+                {Object.keys(avgRatings).map((ratingKey) => {
+                  return (
+                    <span key={ratingKey}>
+                      {ratingsMappings[ratingKey]}
+                      <Rating
+                        value={avgRatings[ratingKey]}
+                        precision={0.5}
+                        readOnly
+                      />
+                    </span>
+                  );
+                })}
+              </div>
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
       </div>
 
       {user ? (
-        <AddReviewForm
-          courseId={courseId}
-          setReviews={setReviews}
-          reviews={reviews}
-        />
+        <div>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<AddIcon />}
+              aria-controls="panel1a-content"
+            >
+              <Typography>
+                <div className="text-xl font-bold">Add Rating</div>
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                <AddReviewForm
+                  courseId={courseId}
+                  setReviews={setReviews}
+                  reviews={reviews}
+                />
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
+        </div>
       ) : (
         <div className="font-bold text-xl text-center">
           Sign in to add a review!
         </div>
       )}
       <div className="space-y-5">
+        <div className="text-xl font-bold text-purple-700">Reviews</div>
         {reviews.map((rev) => {
           return (
             <div
@@ -228,7 +288,7 @@ const CoursePage = () => {
         <div className="flex flex-row-reverse justify-between">
           <button
             className="rounded-xl px-2 py-3 w-fit
-          bg-purple-400 text-white font-bold hover:bg-purple-700"
+          bg-purple-600 text-white font-bold hover:bg-purple-700"
             onClick={() => setPageIndex((prev) => prev + 1)}
             disabled={maxPage - 1 === pageIndex}
           >
@@ -236,7 +296,7 @@ const CoursePage = () => {
           </button>
           <button
             className="rounded-xl px-2 py-3 w-fit
-          bg-purple-400 text-white font-bold hover:bg-purple-700"
+          bg-purple-600 text-white font-bold hover:bg-purple-700"
             onClick={() => setPageIndex((prev) => prev - 1)}
             disabled={pageIndex === 0}
           >
