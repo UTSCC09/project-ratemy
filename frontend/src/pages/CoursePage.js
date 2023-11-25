@@ -1,7 +1,7 @@
 // Citation: icons from https://react-icons.github.io/react-icons/search?q=plus
 // import { AiOutlinePlus } from "react-icons/ai";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Rating from "@mui/material/Rating";
 import AddReviewForm from "../components/AddReviewForm";
 import BarChart from "../components/BarChart";
@@ -12,6 +12,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 // Citation: rating component https://mui.com/material-ui/react-rating/
 import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";
@@ -27,6 +28,7 @@ const ratingsMappings = {
 const CoursePage = () => {
   // Citation: navigate react router https://stackoverflow.com/questions/31079081/programmatically-navigate-using-react-router
   const { state } = useLocation();
+  const navigate = useNavigate();
   const courseId = state !== null ? state.courseId : "";
   const [course, setCourse] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -151,7 +153,14 @@ const CoursePage = () => {
 
   return (
     <div className="px-6 my-36 max-w-4xl mx-auto space-y-5">
+      <ArrowBackIcon
+        fontSize="large"
+        onClick={() => {
+          navigate("/");
+        }}
+      />
       <div className="text-5xl font-bold">{course.code}</div>
+
       <div className="text-3xl font-bold text-purple-700">{course.name}</div>
       <div></div>
       <div>

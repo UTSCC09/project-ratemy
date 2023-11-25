@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const AddCourse = () => {
   const navigate = useNavigate();
@@ -77,6 +78,12 @@ const AddCourse = () => {
 
   return (
     <div className="px-4 my-36 max-w-3xl mx-auto space-y-5">
+      <ArrowBackIcon
+        fontSize="large"
+        onClick={() => {
+          navigate("/");
+        }}
+      />
       <div>
         <div className="text-5xl font-bold">Add Course</div>
         <div className="text-gray-600">
