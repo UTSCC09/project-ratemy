@@ -8,7 +8,7 @@
     const session = require("express-session");
     const passport = require("passport");
     const Auth0Strategy = require("passport-auth0");
-
+    const openai = require("openai");
     const db = require("./db");
     db.init(process.env.ATLAS_URI);
 
@@ -17,6 +17,11 @@
 
     app.use(cors());
     app.use(express.json());
+
+//     // Set up OpenAI API key
+// const openaiApiKey = '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';
+
+// const openaiClient = new openai({ apiKey: openaiApiKey });
 
     /**
      * Session Configuration

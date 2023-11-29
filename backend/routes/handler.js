@@ -6,11 +6,10 @@ const querystring = require("querystring");
 
 require("dotenv").config();
 // const db = require("../db");
-
 const user = require("./user");
 const auth = require("./auth");
 const course = require("./course");
-
+const openai = require("./openAi");
 const secured = (req, res, next) => {
   if (req.user) {
     return next();
@@ -24,12 +23,9 @@ const loginAuth = (req, res, next) => {
   }
   next();
 };
-
 router.get("/api/user", secured, user.userData);
-
+router.post("/api/ask", openai.post);
 const review = require("./review");
-
-
 router.post("/api/reviews", review.postReview);
 router.get("/api/reviews/all", review.getReviews);
 router.get("/api/reviews/:id", review.getCourseReviews);
@@ -40,5 +36,4 @@ router.get("/api/auth/logout", auth.logout);
 router.post("/api/courses", course.post);
 router.get("/api/courses", course.getAll);
 router.get("/api/courses/:id", course.get);
-
 module.exports = router;
