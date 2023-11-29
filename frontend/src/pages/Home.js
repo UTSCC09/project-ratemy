@@ -2,7 +2,10 @@
 // import { AiOutlinePlus } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useAuth0 } from "@auth0/auth0-react";
+import LogoutButton from "../components/LogoutButton";
+import LoginButton from "../components/LoginButton";
+import Profile from "../components/Profile";
 const Home = () => {
   // Citation: navigate react router https://stackoverflow.com/questions/31079081/programmatically-navigate-using-react-router
   const navigate = useNavigate();
@@ -10,62 +13,55 @@ const Home = () => {
   const [courses, setCourses] = useState([]);
   const [pageIndex, setPageIndex] = useState(0);
   const limit = 5;
-  const [user, setUser] = useState(null);
+
   const [maxPage, setMaxPage] = useState(0);
-  useEffect(() => {
-    try {
-      fetch("http://localhost:5000/api/user", {
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.error) {
-            console.error(data.error);
-            setUser(null);
-            return;
-          }
-          console.log(data);
-          setUser(data);
-        });
-    } catch (err) {
-      console.error(err);
-      setUser(null);
-    }
-  }, []);
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
-    try {
-      fetch(
-        "http://localhost:5000/api/courses?page=" +
-          pageIndex +
-          "&limit=" +
-          limit
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          setCourses(data.courses);
-          setMaxPage(data.maxPage);
-        });
-    } catch (err) {
-      console.error(err);
-    }
-  }, [pageIndex]);
+    const fetchCourses = async () => {
+      try {
+        // Get the access token
+        const accessToken = await getAccessTokenSilently();
+
+        // Make the fetch request with the access token in the Authorization header
+        const response = await fetch(
+          `http://localhost:5000/api/courses?page=${pageIndex}&limit=${limit}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        setCourses(data);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+
+    fetchCourses();
+  }, [getAccessTokenSilently, pageIndex]);
 
   return (
     <div className="mx-auto text-center mt-4">
       <div className="flex align-middle justify-end space-x-3 max-w-full font-bold mx-4">
-        {user ? (
-          <a href="http://localhost:5000/api/auth/logout">
+        {isAuthenticated ? (
+         
             <div className="hover:text-purple-700 text-black">
-              {user.displayName}, Logout
+              {user.name}, <LogoutButton> </LogoutButton>
             </div>
-          </a>
+          
         ) : (
-          <a href="http://localhost:5000/api/auth/login">
+          
             <div className="hover:text-purple-700 text-black">
-              Sign In/Sign Up
+              <LoginButton> </LoginButton>
             </div>
-          </a>
+         
         )}
       </div>
       <div className="text-9xl font-bold  mt-36">
@@ -122,6 +118,8 @@ const Home = () => {
             Prev
           </button>
         </div>
+        
+
       </div>
 
       {/* <button
