@@ -10,13 +10,14 @@ require("dotenv").config();
 const user = require("./user");
 const auth = require("./auth");
 const course = require("./course");
+const payment = require("./payment");
 
 const secured = (req, res, next) => {
   if (req.user) {
     return next();
   }
   req.session.returnTo = req.originalUrl;
-  return res.status(401).json({ error: 'Unauthorized' });
+  return res.status(401).json({ error: "Unauthorized" });
 };
 const loginAuth = (req, res, next) => {
   if (req.user) {
@@ -28,7 +29,6 @@ const loginAuth = (req, res, next) => {
 router.get("/api/user", secured, user.userData);
 
 const review = require("./review");
-
 
 router.post("/api/reviews", review.postReview);
 router.get("/api/reviews/all", review.getReviews);
@@ -44,5 +44,6 @@ router.get("/api/auth/logout", auth.logout);
 router.post("/api/courses", course.post);
 router.get("/api/courses", course.getAll);
 router.get("/api/courses/:id", course.get);
+router.post("/api/payment", payment.post);
 
 module.exports = router;

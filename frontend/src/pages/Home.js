@@ -53,7 +53,8 @@ const Home = () => {
 
   return (
     <div className="mx-auto text-center mt-4">
-      <div className="flex align-middle justify-end space-x-3 max-w-full font-bold mx-4">
+      <div className="flex justify-between align-middle space-x-3 max-w-full font-bold mx-4">
+        <button onClick={() => navigate("/upgrade")}>Upgrade to Pro!</button>
         {user ? (
           <a href="http://localhost:5000/api/auth/logout">
             <div className="hover:text-purple-700 text-black">
