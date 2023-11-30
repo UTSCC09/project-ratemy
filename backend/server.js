@@ -8,7 +8,7 @@
     const session = require("express-session");
     const passport = require("passport");
     const Auth0Strategy = require("passport-auth0");
-    const openai = require("openai");
+
     const db = require("./db");
     db.init(process.env.ATLAS_URI);
 
@@ -18,44 +18,12 @@
     app.use(cors());
     app.use(express.json());
 
-//     // Set up OpenAI API key
+
 // const openaiApiKey = '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';
 
 // const openaiClient = new openai({ apiKey: openaiApiKey });
 
-    /**
-     * Session Configuration
-     */
-    const sessionConfig = {
-    secret: process.env.SESSION_SECRET, 
-    cookie: {},
-    resave: false,
-    saveUninitialized: false,
-    };
-    app.use(session(sessionConfig));
-
-    /**
-     * Passport Configuration
-     */
-    const strategy = new Auth0Strategy(
-    {
-        domain: process.env.AUTH0_DOMAIN,
-        clientID: process.env.AUTH0_CLIENT_ID,
-        clientSecret: process.env.AUTH0_CLIENT_SECRET,
-        callbackURL: process.env.AUTH0_CALLBACK_URL,
-    },
-    function (accessToken, refreshToken, extraParams, profile, done) {
-
-        return done(null, profile);
-    }
-    );
-    passport.use(strategy);
-    app.use(passport.initialize());
-    app.use(passport.session());
-
-    passport.serializeUser((user, done) => {
-    done(null, user);
-    });
+   
     
 
     app.use(cors({
@@ -69,9 +37,7 @@
         res.header("Access-Control-Allow-Methods", "*");
         next();
       });
-    passport.deserializeUser((user, done) => {
-    done(null, user);
-    });
+   
     
     app.use(require("./routes/handler"));
     app.listen(port, () => {
