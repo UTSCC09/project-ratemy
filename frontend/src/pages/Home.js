@@ -2,69 +2,69 @@
 // import { AiOutlinePlus } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useAuth0 } from "@auth0/auth0-react";
+import LogoutButton from "../components/LogoutButton";
+import LoginButton from "../components/LoginButton";
+import Profile from "../components/Profile";
 const Home = () => {
   // Citation: navigate react router https://stackoverflow.com/questions/31079081/programmatically-navigate-using-react-router
   const navigate = useNavigate();
 
   const [courses, setCourses] = useState([]);
-  let pageIndex = 0;
-  const limit = 10;
-  const [user, setUser] = useState(null);
-  useEffect(() => {
-    try {
-      fetch("http://localhost:5000/api/user", 
-      {
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.error) {
-            console.error(data.error);
-            setUser(null);
-            return;
-          }
-          console.log(data);
-          setUser(data);
-        });
+  const [pageIndex, setPageIndex] = useState(0);
+  const limit = 5;
 
-    } catch (err) {
-      console.error(err);
-      setUser(null);
-    }
-  }
-  , []);
+  const [maxPage, setMaxPage] = useState(0);
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
+
   useEffect(() => {
-    try {
-      fetch(
-        "http://localhost:5000/api/courses?page=" +
-          pageIndex +
-          "&limit=" +
-          limit
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          setCourses(data);
-        });
-    } catch (err) {
-      console.error(err);
-    }
-  }, [pageIndex]);
+    const fetchCourses = async () => {
+      try {
+        // Get the access token
+        const accessToken = await getAccessTokenSilently();
+
+        // Make the fetch request with the access token in the Authorization header
+        const response = await fetch(
+          `http://localhost:5000/api/courses?page=${pageIndex}&limit=${limit}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        
+        setCourses(data.courses);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+
+    fetchCourses();
+  }, [getAccessTokenSilently, pageIndex]);
 
   return (
     <div className="mx-auto text-center mt-4">
-      <div className="flex align-middle justify-end space-x-3 max-w-full font-bold mx-4">        
-        {user ? (
-          <a href="http://localhost:5000/api/auth/logout">
-          <div className="hover:text-purple-700 text-black">{user.displayName}, Logout</div>
-          </a>
+      <div className="flex align-middle justify-end space-x-3 max-w-full font-bold mx-4">
+        {isAuthenticated ? (
+         
+            <div className="hover:text-purple-700 text-black">
+              {user.name}, <LogoutButton> </LogoutButton>
+            </div>
           
         ) : (
-          <a href="http://localhost:5000/api/auth/login">
-          <div className="hover:text-purple-700 text-black">Sign In/Sign Up</div>
-          </a>
+          
+            <div className="hover:text-purple-700 text-black">
+              <LoginButton> </LoginButton>
+            </div>
+         
         )}
-        </div>      
+      </div>
       <div className="text-9xl font-bold  mt-36">
         Rate<span className="text-purple-700">My</span>
       </div>
@@ -80,8 +80,9 @@ const Home = () => {
             onClick={() => {
               navigate("/add-course");
             }}
-            className="rounded-xl px-2 py-3 w-1/6
-          bg-purple-500 text-white font-bold hover:bg-purple-700"
+            className="rounded-xl px-2 py-3 w-fill
+          bg-purple-500 text-white font-bold hover:bg-purple-700 disabled:bg-purple-300"
+            disabled={user ? false : true}
           >
             Add Course
           </button>
@@ -92,7 +93,7 @@ const Home = () => {
               <button
                 key={course._id}
                 onClick={() => {
-                  navigate('/course', { state: {courseId: course._id}});
+                  navigate("/course", { state: { courseId: course._id } });
                 }}
                 className="font-bold text-2xl hover:text-black hover:bg-gray-200"
               >
@@ -103,18 +104,24 @@ const Home = () => {
         </div>
         <div className="flex flex-row-reverse justify-between">
           <button
-            className="rounded-xl px-2 py-3 w-1/6
-          bg-purple-400 text-white font-bold hover:bg-purple-700"
+            className="rounded-xl px-2 py-3 w-fit
+          bg-purple-600 text-white font-bold hover:bg-purple-700"
+            onClick={() => setPageIndex((prev) => prev + 1)}
+            disabled={maxPage - 1 === pageIndex}
           >
             Next
           </button>
           <button
-            className="rounded-xl px-2 py-3 w-1/6
-          bg-purple-400 text-white font-bold hover:bg-purple-700"
+            className="rounded-xl px-2 py-3 w-fit
+          bg-purple-600 text-white font-bold hover:bg-purple-700"
+            onClick={() => setPageIndex((prev) => prev - 1)}
+            disabled={pageIndex === 0}
           >
             Prev
           </button>
         </div>
+        
+
       </div>
 
       {/* <button
