@@ -16,6 +16,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 // Citation: rating component https://mui.com/material-ui/react-rating/
 import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";
+import { useAuth0 } from "@auth0/auth0-react";
 Chart.register(CategoryScale);
 const ratingsMappings = {
   difficulty: "Difficulty of content",
@@ -37,10 +38,10 @@ const CoursePage = () => {
   const [pageIndex, setPageIndex] = useState(0);
   const [maxPage, setMaxPage] = useState(0);
   const limit = 5;
-  const [user, setUser] = useState(null);
+  
   const [editPressed, setEditPressed] = useState(true);
   const [editedInput, setEditedInput] = useState("");
-
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
   useEffect(() => {
     try {
       fetch("http://localhost:5000/api/reviews/totals/" + courseId)
@@ -65,23 +66,23 @@ const CoursePage = () => {
     }
   }, [courseId]);
 
-  useEffect(() => {
-    try {
-      fetch("http://localhost:5000/api/user", {
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.error) {
-            console.error(data.error);
-          } else {
-            setUser(data);
-          }
-        });
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
+  // useEffect(() => {
+  //   try {
+  //     fetch("http://localhost:5000/api/user", {
+  //       credentials: "include",
+  //     })
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         if (data.error) {
+  //           console.error(data.error);
+  //         } else {
+  //           setUser(data);
+  //         }
+  //       });
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }, []);
 
   useEffect(() => {
     try {
@@ -107,6 +108,7 @@ const CoursePage = () => {
       )
         .then((res) => res.json())
         .then((data) => {
+          
           setReviews(data.reviews);
           setMaxPage(data.maxPage);
         });
@@ -124,7 +126,7 @@ const CoursePage = () => {
       await fetch("http://localhost:5000/api/reviews/" + review._id, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: user.emails[0].value }),
+        body: JSON.stringify({ email: user.email }),
       }).then(() => {
         getData();
       });
@@ -145,7 +147,7 @@ const CoursePage = () => {
           },
           body: JSON.stringify({
             review: editedInput,
-            email: user.emails[0].value,
+            email: user.email,
           }),
         });
       } catch (err) {
@@ -223,7 +225,7 @@ const CoursePage = () => {
         </Accordion>
       </div>
 
-      {user ? (
+      {isAuthenticated ? (
         <div>
           <Accordion>
             <AccordionSummary
@@ -286,7 +288,7 @@ const CoursePage = () => {
                     </div>
                   );
                 })}
-                {user && rev.email === user.emails[0].value && (
+                {isAuthenticated && rev.email === user.email && (
                   <div className="flex space-x-3">
                     <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-black hover:border-black">
                       {editPressed ? (

@@ -38,7 +38,8 @@ const Home = () => {
         }
 
         const data = await response.json();
-        setCourses(data);
+        
+        setCourses(data.courses);
       } catch (error) {
         console.error('Error fetching courses:', error);
       }

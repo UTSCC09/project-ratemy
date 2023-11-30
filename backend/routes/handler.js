@@ -7,8 +7,8 @@ const { auth } = require('express-oauth2-jwt-bearer');
 require("dotenv").config();
 // const db = require("../db");
 
-const user = require("./user");
-const auth = require("./auth");
+
+
 const course = require("./course");
 
 
@@ -22,11 +22,11 @@ const jwtCheck = auth({
   tokenSigningAlg: 'RS256'
 });
 
-router.post("/api/reviews",jwtCheck, review.postReview);
+router.post("/api/reviews", review.postReview);
 router.get("/api/reviews/all", review.getReviews);
 router.get("/api/reviews/:id", review.getCourseReviews);
 router.get("/api/reviews/averages/:id", review.getRatingAverages);
-router.patch("/api/reviews/:id",jwtCheck, review.patchReview);
+router.patch("/api/reviews/:id", review.patchReview);
 router.delete("/api/reviews/:id", review.deleteReview);
 router.post("/api/reviews", review.postReview);
 router.get("/api/reviews/totals/:id", review.getTotalRatings);
