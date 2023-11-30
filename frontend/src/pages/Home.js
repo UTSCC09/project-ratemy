@@ -80,7 +80,8 @@ const Home = () => {
               navigate("/add-course");
             }}
             className="rounded-xl px-2 py-3 w-fill
-          bg-purple-500 text-white font-bold hover:bg-purple-700"
+          bg-purple-500 text-white font-bold hover:bg-purple-700 disabled:bg-purple-300"
+            disabled={user ? false : true}
           >
             Add Course
           </button>
@@ -103,7 +104,7 @@ const Home = () => {
         <div className="flex flex-row-reverse justify-between">
           <button
             className="rounded-xl px-2 py-3 w-fit
-          bg-purple-400 text-white font-bold hover:bg-purple-700"
+          bg-purple-600 text-white font-bold hover:bg-purple-700"
             onClick={() => setPageIndex((prev) => prev + 1)}
             disabled={maxPage - 1 === pageIndex}
           >
@@ -111,7 +112,7 @@ const Home = () => {
           </button>
           <button
             className="rounded-xl px-2 py-3 w-fit
-          bg-purple-400 text-white font-bold hover:bg-purple-700"
+          bg-purple-600 text-white font-bold hover:bg-purple-700"
             onClick={() => setPageIndex((prev) => prev - 1)}
             disabled={pageIndex === 0}
           >
