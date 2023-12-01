@@ -17,6 +17,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";
 import { useAuth0 } from "@auth0/auth0-react";
+import AIField from "../components/AIField";
+
 Chart.register(CategoryScale);
 const ratingsMappings = {
   difficulty: "Difficulty of content",
@@ -38,10 +40,11 @@ const CoursePage = () => {
   const [pageIndex, setPageIndex] = useState(0);
   const [maxPage, setMaxPage] = useState(0);
   const limit = 5;
-  
+
   const [editPressed, setEditPressed] = useState(true);
   const [editedInput, setEditedInput] = useState("");
-  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
+    useAuth0();
   useEffect(() => {
     try {
       fetch("http://localhost:5000/api/reviews/totals/" + courseId)
@@ -108,7 +111,6 @@ const CoursePage = () => {
       )
         .then((res) => res.json())
         .then((data) => {
-          
           setReviews(data.reviews);
           setMaxPage(data.maxPage);
         });
@@ -172,87 +174,82 @@ const CoursePage = () => {
       <div></div>
       <div>
         {totalsRatings["totals"] ? (
-          <div>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-              >
-                <Typography>
-                  <div className="text-xl font-bold">Overview of Ratings</div>
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography>
-                  <BarChart data={totalsRatings["totals"]} />
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
-          </div>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+            >
+              <Typography component="div">
+                <div className="text-xl font-bold">Overview of Ratings</div>
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography component="div">
+                <BarChart data={totalsRatings["totals"]} />
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
         ) : (
           <p>No data available</p>
         )}
       </div>
 
-      <div>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+        >
+          <Typography component="div">
+            <div className="text-xl font-bold">Overall Average Ratings</div>
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography component="div">
+            <div className="flex flex-col justify-center items-center space-y-5">
+              {Object.keys(avgRatings).map((ratingKey) => {
+                return (
+                  <span key={ratingKey}>
+                    {ratingsMappings[ratingKey]}
+                    <Rating
+                      value={avgRatings[ratingKey]}
+                      precision={0.5}
+                      readOnly
+                    />
+                  </span>
+                );
+              })}
+            </div>
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+
+      {isAuthenticated ? (
         <Accordion>
           <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
+            expandIcon={<AddIcon />}
             aria-controls="panel1a-content"
           >
-            <Typography>
-              <div className="text-xl font-bold">Overall Average Ratings</div>
+            <Typography component="div">
+              <div className="text-xl font-bold">Add Rating</div>
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Typography>
-              <div className="flex flex-col justify-center items-center space-y-5">
-                {Object.keys(avgRatings).map((ratingKey) => {
-                  return (
-                    <span key={ratingKey}>
-                      {ratingsMappings[ratingKey]}
-                      <Rating
-                        value={avgRatings[ratingKey]}
-                        precision={0.5}
-                        readOnly
-                      />
-                    </span>
-                  );
-                })}
-              </div>
+            <Typography component="div">
+              <AddReviewForm
+                courseId={courseId}
+                setReviews={setReviews}
+                reviews={reviews}
+              />
             </Typography>
           </AccordionDetails>
         </Accordion>
-      </div>
-
-      {isAuthenticated ? (
-        <div>
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<AddIcon />}
-              aria-controls="panel1a-content"
-            >
-              <Typography>
-                <div className="text-xl font-bold">Add Rating</div>
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography>
-                <AddReviewForm
-                  courseId={courseId}
-                  setReviews={setReviews}
-                  reviews={reviews}
-                />
-              </Typography>
-            </AccordionDetails>
-          </Accordion>
-        </div>
       ) : (
         <div className="font-bold text-xl text-center">
           Sign in to add a review!
         </div>
       )}
       <div className="space-y-5">
+        <AIField />
         <div className="text-xl font-bold text-purple-700">Reviews</div>
         {reviews.map((rev) => {
           // setEditedInput(rev.review);
