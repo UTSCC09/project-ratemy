@@ -13,31 +13,58 @@ const PaymentForm = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!stripe || !elements) {
       return;
     }
-
-    const { error, paymentIntent } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: "http://localhost:3000/",
-      },
-      redirect: "if_required",
-    });
-
-    if (error) {
-      console.error(error);
+  
+    try {
+      const { error, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: "http://localhost:3000/",
+        },
+        payment_method_options: {
+          // Include the user's email for reference
+          billing_details: {
+            email: "email",
+          },
+        },
+        redirect: "if_required",
+      });
+  
+      if (error) {
+        console.error(error);
+        setPaymentError(true);
+        setPaymentSuccess(false);
+      } else if (paymentIntent && paymentIntent.status === "succeeded") {
+        setPaymentSuccess(true);
+        setPaymentError(false);
+        try{
+          fetch("http://localhost:5000/api/isSubscribed", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: "priyankmdave@gmail.com",
+            }),
+          } ).then((res) => {res.json()});
+        }
+        catch (err) {
+          console.error("Error sending POST request:", err);
+        }
+       
+      } else {
+        console.log("Payment failed");
+      }
+    } catch (error) {
+      console.error("Error confirming payment:", error);
       setPaymentError(true);
       setPaymentSuccess(false);
-    } else if (paymentIntent && paymentIntent.status === "succeeded") {
-      setPaymentSuccess(true);
-      setPaymentError(false);
-      console.log("Payment successful");
-    } else {
-      console.log("Payment failed");
     }
   };
+  
 
   return (
     <form onSubmit={handleSubmit}>

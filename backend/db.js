@@ -55,6 +55,11 @@ const createSchemas = () => {
   });
   const review = mongoose.model("review", reviewSchema);
   models.review = review;
+  const isSubscribedSchema = new mongoose.Schema({
+    email: { type: String, required: true },
+  });
+  const isSubscribed = mongoose.model("isSubscribed", isSubscribedSchema);
+  models.isSubscribed = isSubscribed;
 };
 
 const init = (url) => {

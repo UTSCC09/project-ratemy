@@ -45,5 +45,7 @@ router.post("/api/courses", course.post);
 router.get("/api/courses", course.getAll);
 router.get("/api/courses/:id", course.get);
 router.post("/api/payment", payment.post);
+router.get("/api/isSubscribed", payment.getIsSubscribed);
+router.post("/api/isSubscribed", payment.postIsSubscribed);
 
 module.exports = router;
