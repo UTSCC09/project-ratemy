@@ -24,6 +24,7 @@ module.exports.post = async (req, res) => {
     return res.status(200).json(insertedCourse);
   }
 };
+
 module.exports.getAll = async (req, res) => {
   let page = req.query.page || 0;
   const limit = req.query.limit || 10;
@@ -47,6 +48,7 @@ module.exports.getAll = async (req, res) => {
     .limit(limit);
   return res.json({ courses, maxPage: maxPage + 1 });
 };
+
 module.exports.get = async (req, res) => {
   const id = req.params.id;
 
@@ -55,4 +57,15 @@ module.exports.get = async (req, res) => {
     return res.status(404).end("Course not found");
   }
   return res.json(course);
+};
+
+module.exports.search = async (req, res) => {
+  const substring = req.params.substring;
+  try {
+    const courses = await db.models.course.find({ code: { $regex: new RegExp(substring, 'i') } });
+    return res.status(200).json(courses);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
 };

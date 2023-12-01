@@ -31,7 +31,8 @@ router.delete("/api/reviews/:id", review.deleteReview);
 router.post("/api/reviews", review.postReview);
 router.get("/api/reviews/totals/:id", review.getTotalRatings);
 router.post("/api/courses", course.post);
-router.get("/api/courses",jwtCheck, course.getAll);
+router.get("/api/courses/search/:substring", course.search);
+router.get("/api/courses", jwtCheck, course.getAll);
 router.get("/api/courses/:id", course.get);
 
 module.exports = router;
