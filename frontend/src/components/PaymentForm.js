@@ -9,6 +9,7 @@ const PaymentForm = (props) => {
   const stripe = useStripe();
   const elements = useElements();
   const [paymentError, setPaymentError] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,18 +18,24 @@ const PaymentForm = (props) => {
       return;
     }
 
-    const result = await stripe.confirmPayment({
+    const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         return_url: "http://localhost:3000/",
       },
+      redirect: "if_required",
     });
 
-    if (result.error) {
-      console.error(result.error.message);
+    if (error) {
+      console.error(error);
       setPaymentError(true);
+      setPaymentSuccess(false);
+    } else if (paymentIntent && paymentIntent.status === "succeeded") {
+      setPaymentSuccess(true);
+      setPaymentError(false);
+      console.log("Payment successful");
     } else {
-      console.error("An unexpected error occurred");
+      console.log("Payment failed");
     }
   };
 
@@ -41,6 +48,11 @@ const PaymentForm = (props) => {
         <PaymentElement />
         {paymentError && (
           <div className="text-red-600">Error with the payment, try again!</div>
+        )}
+        {paymentSuccess && (
+          <div className="text-green-600">
+            Payment successful! Enjoy the full features of AI
+          </div>
         )}
         <button
           type="submit"
