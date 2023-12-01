@@ -11,41 +11,76 @@ const Home = () => {
   const navigate = useNavigate();
 
   const [courses, setCourses] = useState([]);
+  const [searchInput, setSearchInput] = useState([]);
   const [pageIndex, setPageIndex] = useState(0);
   const limit = 5;
 
   const [maxPage, setMaxPage] = useState(0);
   const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        // Get the access token
-        const accessToken = await getAccessTokenSilently();
-
-        // Make the fetch request with the access token in the Authorization header
-        const response = await fetch(
-          `http://localhost:5000/api/courses?page=${pageIndex}&limit=${limit}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        const data = await response.json();
-        
-        setCourses(data.courses);
-      } catch (error) {
-        console.error('Error fetching courses:', error);
-      }
-    };
-
+  const handleClear = async () => {
+    setSearchInput("");
+    setPageIndex(0);
     fetchCourses();
+  };
+
+  const handleSearch = async () => {
+    try {
+      const accessToken = await getAccessTokenSilently();
+      const response = await fetch(
+        `http://localhost:5000/api/courses/search/${searchInput}?page=${pageIndex}&limit=${limit}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      setCourses(data.courses);
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+    }
+  };
+
+  const fetchCourses = async () => {
+    try {
+      // Get the access token
+      const accessToken = await getAccessTokenSilently();
+
+      // Make the fetch request with the access token in the Authorization header
+      const response = await fetch(
+        `http://localhost:5000/api/courses?page=${pageIndex}&limit=${limit}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      
+      setCourses(data.courses);
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (searchInput != "") {
+      handleSearch();
+    }
+    else {
+      fetchCourses();
+    }
   }, [getAccessTokenSilently, pageIndex]);
 
   return (
@@ -87,8 +122,32 @@ const Home = () => {
             Add Course
           </button>
         </div>
+        <div className="flex align-middle justify-between pt-5">
+        <input
+          type="text"
+          placeholder="Search by course code"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          className="border border-gray-300 rounded-md p-2 w-full"
+        />
+        <button
+          onClick={() => {
+            setPageIndex(0);
+            handleSearch();
+          }}
+          className="bg-purple-600 text-white font-bold px-4 py-2 rounded-md ml-2"
+        >
+          Search
+        </button>
+        <button
+          onClick={handleClear}
+          className="bg-purple-600 text-white font-bold px-4 py-2 rounded-md ml-2"
+        >
+          Clear
+        </button>
+        </div>
         <div className="flex flex-col text-left px-4 py-4 space-y-3 my-4 text-purple-700 border-solid border border-black rounded-xl">
-          {courses.map((course) => {
+          { courses != null ? courses.map((course) => {
             return (
               <button
                 key={course._id}
@@ -100,7 +159,7 @@ const Home = () => {
                 {course.code}
               </button>
             );
-          })}
+          }) : "aa"}
         </div>
         <div className="flex flex-row-reverse justify-between">
           <button
