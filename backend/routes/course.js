@@ -51,19 +51,43 @@ module.exports.getAll = async (req, res) => {
 
 module.exports.get = async (req, res) => {
   const id = req.params.id;
-
-  const course = await db.models.course.findById(id);
-  if (course == null) {
-    return res.status(404).end("Course not found");
+  try {
+    const course = await db.models.course.findById(id);
+    if (course == null) {
+      return res.status(404).end("Course not found");
+    }
+    return res.json(course);
+    // 
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal Server Error' });
   }
-  return res.json(course);
 };
 
 module.exports.search = async (req, res) => {
-  const substring = req.params.substring;
   try {
-    const courses = await db.models.course.find({ code: { $regex: new RegExp(substring, 'i') } });
-    return res.status(200).json(courses);
+    const substring = req.params.substring;
+    let page = req.query.page || 0;
+    const limit = req.query.limit || 10;
+    let maxPage = 0;
+
+    page = Math.max(0, page);
+    const numCourses = await db.models.course.countDocuments({ code: { $regex: new RegExp(substring, 'i') } });
+
+    if (numCourses === 0) {
+      maxPage = 0;
+    } else {
+      maxPage = Math.ceil(numCourses / limit) - 1;
+    }
+
+    page = Math.min(page, maxPage);
+
+    const courses = await db.models.course
+      .find({ code: { $regex: new RegExp(substring, 'i') } })
+      .sort({ date: -1 })
+      .skip(page * limit)
+      .limit(limit);
+    return res.json({ courses, maxPage: maxPage + 1 });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Internal Server Error' });
