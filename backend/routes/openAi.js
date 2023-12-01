@@ -29,7 +29,6 @@ module.exports.post = async (req, res) => {
       // add reviews as string to prompt string before the prompt 
       prompt ="These are reviews about a course: \n" +reviews+"\n"+prompt;
 
-      console.log(prompt);
       
       const completion = await openaiClient.chat.completions.create({
         messages: [{ role: "user", content: prompt }],
