@@ -62,7 +62,6 @@ exports.getReviews = async (req, res) => {
             .sort({ [sortField]: sortOrder })
             .skip(page * limit)
             .limit(limit);
-        console.log(reviews);
         return res.status(200).json(reviews);
     } catch (err) {
         return res.status(500).json({ error: err.message });
@@ -170,8 +169,6 @@ exports.patchReview = async (req, res) => {
         if (!existingReview) {
             return res.status(404).json({ error: 'Review not found.' });
         }
-        console.log(existingReview.email);
-        console.log(req.body.email)
         if (req.body.email !== existingReview.email) {
             return res.status(401).json({ error: 'Unauthorized' });
         }

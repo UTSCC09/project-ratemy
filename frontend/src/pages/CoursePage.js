@@ -50,7 +50,6 @@ const CoursePage = () => {
 
   const [editPressed, setEditPressed] = useState(true);
   const [editedInput, setEditedInput] = useState("");
-  
   const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
     useAuth0();
 
@@ -139,7 +138,7 @@ const CoursePage = () => {
 
   useEffect(() => {
     getData();
-  }, [profFilter, pageIndex, courseId, sortBy, sortOrder]);
+  }, [pageIndex, courseId, sortBy, sortOrder, profFilter]);
 
   const handleDelete = async (review) => {
     try {
