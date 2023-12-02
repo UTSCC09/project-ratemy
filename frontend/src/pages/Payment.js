@@ -45,7 +45,7 @@ const Payment = () => {
       <ArrowBackIcon
         fontSize="large"
         onClick={() => {
-          navigate("/");
+          navigate(-1);
         }}
       />
       <div className="text-5xl font-bold">Upgrade to Pro!</div>
