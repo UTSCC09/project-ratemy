@@ -16,7 +16,8 @@ const Home = () => {
   const limit = 5;
 
   const [maxPage, setMaxPage] = useState(0);
-  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
+    useAuth0();
 
   const handleClear = async () => {
     setSearchInput("");
@@ -37,13 +38,13 @@ const Home = () => {
       );
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
 
       const data = await response.json();
       setCourses(data.courses);
     } catch (error) {
-      console.error('Error fetching courses:', error);
+      console.error("Error fetching courses:", error);
     }
   };
 
@@ -63,22 +64,21 @@ const Home = () => {
       );
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
 
       const data = await response.json();
-      
+
       setCourses(data.courses);
     } catch (error) {
-      console.error('Error fetching courses:', error);
+      console.error("Error fetching courses:", error);
     }
   };
 
   useEffect(() => {
-    if (searchInput != "") {
+    if (searchInput !== "") {
       handleSearch();
-    }
-    else {
+    } else {
       fetchCourses();
     }
   }, [getAccessTokenSilently, pageIndex]);
@@ -86,18 +86,15 @@ const Home = () => {
   return (
     <div className="mx-auto text-center mt-4">
       <div className="flex align-middle justify-end space-x-3 max-w-full font-bold mx-4">
+        <button onClick={() => navigate("/upgrade")}>Upgrade to Pro!</button>
         {isAuthenticated ? (
-         
-            <div className="hover:text-purple-700 text-black">
-              {user.name}, <LogoutButton> </LogoutButton>
-            </div>
-          
+          <div className="hover:text-purple-700 text-black">
+            {user.name}, <LogoutButton> </LogoutButton>
+          </div>
         ) : (
-          
-            <div className="hover:text-purple-700 text-black">
-              <LoginButton> </LoginButton>
-            </div>
-         
+          <div className="hover:text-purple-700 text-black">
+            <LoginButton> </LoginButton>
+          </div>
         )}
       </div>
       <div className="text-9xl font-bold  mt-36">
@@ -116,50 +113,52 @@ const Home = () => {
               navigate("/add-course");
             }}
             className="rounded-xl px-2 py-3 w-fill
-          bg-purple-500 text-white font-bold hover:bg-purple-700 disabled:bg-purple-300"
+          bg-purple-600 text-white font-bold hover:bg-purple-700 disabled:bg-purple-300"
             disabled={user ? false : true}
           >
             Add Course
           </button>
         </div>
         <div className="flex align-middle justify-between pt-5">
-        <input
-          type="text"
-          placeholder="Search by course code"
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          className="border border-gray-300 rounded-md p-2 w-full"
-        />
-        <button
-          onClick={() => {
-            setPageIndex(0);
-            handleSearch();
-          }}
-          className="bg-purple-600 text-white font-bold px-4 py-2 rounded-md ml-2"
-        >
-          Search
-        </button>
-        <button
-          onClick={handleClear}
-          className="bg-purple-600 text-white font-bold px-4 py-2 rounded-md ml-2"
-        >
-          Clear
-        </button>
+          <input
+            type="text"
+            placeholder="Search by course code"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            className="border border-gray-300 rounded-md p-2 w-full"
+          />
+          <button
+            onClick={() => {
+              setPageIndex(0);
+              handleSearch();
+            }}
+            className="bg-purple-600 text-white font-bold px-4 py-2 rounded-md ml-2"
+          >
+            Search
+          </button>
+          <button
+            onClick={handleClear}
+            className="bg-purple-600 text-white font-bold px-4 py-2 rounded-md ml-2"
+          >
+            Clear
+          </button>
         </div>
         <div className="flex flex-col text-left px-4 py-4 space-y-3 my-4 text-purple-700 border-solid border border-black rounded-xl">
-          { courses != null ? courses.map((course) => {
-            return (
-              <button
-                key={course._id}
-                onClick={() => {
-                  navigate("/course", { state: { courseId: course._id } });
-                }}
-                className="font-bold text-2xl hover:text-black hover:bg-gray-200"
-              >
-                {course.code}
-              </button>
-            );
-          }) : "aa"}
+          {courses != null
+            ? courses.map((course) => {
+                return (
+                  <button
+                    key={course._id}
+                    onClick={() => {
+                      navigate("/course", { state: { courseId: course._id } });
+                    }}
+                    className="font-bold text-2xl hover:text-black hover:bg-gray-200"
+                  >
+                    {course.code}
+                  </button>
+                );
+              })
+            : "aa"}
         </div>
         <div className="flex flex-row-reverse justify-between">
           <button
@@ -179,17 +178,7 @@ const Home = () => {
             Prev
           </button>
         </div>
-        
-
       </div>
-
-      {/* <button
-        onClick={() => {
-          navigate("/add-course");
-        }}
-      >
-        <AiOutlinePlus />
-      </button> */}
     </div>
   );
 };

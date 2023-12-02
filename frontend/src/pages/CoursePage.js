@@ -159,7 +159,7 @@ const CoursePage = () => {
   };
 
   return (
-    <div className="px-6 my-36 max-w-4xl mx-auto space-y-5">
+    <div className="px-6 my-28 max-w-4xl mx-auto space-y-5">
       <ArrowBackIcon
         fontSize="large"
         onClick={() => {
