@@ -18,7 +18,15 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
     prof: "",
     review: "",
   });
+  const [addNewProf, setAddNewProf] = useState(false);
 
+  const handleSelectChange = (e) => {
+    const value = e.target.value;
+    setAddNewProf(value === "addNew");
+    setRevData((prev) => ({ ...prev, prof: value === "addNew" ? "" : value }));
+  };
+
+  const [course, setCourse] = useState({});
   const [rating, setRating] = useState({
     difficulty: 0,
     quality_of_teaching: 0,
@@ -28,23 +36,21 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
   });
   const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 
-  // useEffect(() => {
-  //   try {
-  //     fetch("http://localhost:5000/api/user", {
-  //       credentials: "include",
-  //     })
-  //       .then((res) => res.json())
-  //       .then((data) => {
-  //         if (data.error) {
-  //           console.error(data.error);
-  //         } else {
-  //           setEmail(data);
-  //         }
-  //       });
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // }, []);
+  const getCourse = () => {
+    try {
+      fetch("http://localhost:5000/api/courses/" + courseId)
+        .then((res) => res.json())
+        .then((data) => {
+          setCourse(data);
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    getCourse();
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,6 +73,7 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
         if (res.status === 200) {
           res.json().then((data) => {
             setReviews((reviews) => [...reviews, data]);
+            getCourse();
           });
         }
       });
@@ -99,7 +106,7 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex flex-col">
-        {Object.keys(rating).map((ratingKey) => {
+        {Object.keys(rating) ? Object.keys(rating).map((ratingKey) => {
           return (
             <div
               key={ratingKey}
@@ -119,8 +126,8 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
               </span>
             </div>
           );
-        })}
-        <div className="w-4/6 mx-auto">
+        }) : "No ratings"}
+        {/* <div className="w-4/6 mx-auto">
           <label>Professor:</label>
           <input
             className=" mx-auto my-2 border-2 border-gray-400 rounded block py-2 px-4 w-full hover:border-gray-600 hover:border-2 focus:border-purple-700 focus:border-2 focus:outline-none"
@@ -131,6 +138,34 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
             placeholder="Smith"
             required
           />
+        </div> */}
+        <div className="w-4/6 mx-auto">
+          <label>Professor:</label>
+          <select
+            onChange={handleSelectChange}
+            className="mx-auto my-2 border-2 border-gray-400 rounded block py-2 px-4 w-full hover:border-gray-600 hover:border-2 focus:border-purple-700 focus:border-2 focus:outline-none"
+            value={addNewProf ? "addNew" : revData.prof}
+            name="prof"
+          >
+            <option value="" disabled>
+              Select a professor or add a new one
+            </option>
+            {course.professorName ? course.professorName.map((professor) => (
+              <option key={professor} value={professor}>
+                {professor}
+              </option>
+            )) : ""}
+            <option value="addNew">Add New Professor</option>
+          </select>
+          {addNewProf && (
+            <input
+              className="mx-auto my-2 border-2 border-gray-400 rounded block py-2 px-4 w-full hover:border-gray-600 hover:border-2 focus:border-purple-700 focus:border-2 focus:outline-none"
+              value={revData.prof}
+              onChange={handleChange}
+              name="prof"
+              placeholder="Enter new professor name"
+            />
+          )}
         </div>
         <div className="w-4/6 mx-auto">
           <label>Review:</label>

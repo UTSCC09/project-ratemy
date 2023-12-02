@@ -69,24 +69,6 @@ const CoursePage = () => {
     }
   }, [courseId]);
 
-  // useEffect(() => {
-  //   try {
-  //     fetch("http://localhost:5000/api/user", {
-  //       credentials: "include",
-  //     })
-  //       .then((res) => res.json())
-  //       .then((data) => {
-  //         if (data.error) {
-  //           console.error(data.error);
-  //         } else {
-  //           setUser(data);
-  //         }
-  //       });
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // }, []);
-
   useEffect(() => {
     try {
       fetch("http://localhost:5000/api/reviews/averages/" + courseId)
@@ -204,21 +186,21 @@ const CoursePage = () => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography component="div">
-            <div className="flex flex-col justify-center items-center space-y-5">
-              {Object.keys(avgRatings).map((ratingKey) => {
-                return (
-                  <span key={ratingKey}>
-                    {ratingsMappings[ratingKey]}
-                    <Rating
-                      value={avgRatings[ratingKey]}
-                      precision={0.5}
-                      readOnly
-                    />
-                  </span>
-                );
-              })}
-            </div>
+          <Typography>
+              <div className="flex flex-col justify-center items-center space-y-5">
+                {Object.keys(avgRatings) ? Object.keys(avgRatings).map((ratingKey) => {
+                  return (
+                    <span key={ratingKey}>
+                      {ratingsMappings[ratingKey]}
+                      <Rating
+                        value={avgRatings[ratingKey]}
+                        precision={0.5}
+                        readOnly
+                      />
+                    </span>
+                  );
+                }) : "No ratings"}
+              </div>
           </Typography>
         </AccordionDetails>
       </Accordion>
@@ -251,7 +233,7 @@ const CoursePage = () => {
       <div className="space-y-5">
         <AIField courseId={courseId} />
         <div className="text-xl font-bold text-purple-700">Reviews</div>
-        {reviews.map((rev) => {
+        {reviews ? reviews.map((rev) => {
           // setEditedInput(rev.review);
           return (
             <div
@@ -277,14 +259,14 @@ const CoursePage = () => {
               </div>
 
               <div className="flex flex-col flex-wrap justify-center align-center w-2/6">
-                {Object.keys(rev.rating).map((ratingKey) => {
+                {Object.keys(rev.rating) ? Object.keys(rev.rating).map((ratingKey) => {
                   return (
                     <div key={rev._id + ratingKey}>
                       <div>{ratingsMappings[ratingKey]}</div>
                       <Rating value={rev.rating[ratingKey]} readOnly />
                     </div>
                   );
-                })}
+                }) : "No ratings"}
                 {isAuthenticated && rev.email === user.email && (
                   <div className="flex space-x-3">
                     <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-black hover:border-black">
@@ -308,7 +290,7 @@ const CoursePage = () => {
               </div>
             </div>
           );
-        })}
+        }) : "No reviews"}
       </div>
 
       {reviews.length === 0 ? (

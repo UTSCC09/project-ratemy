@@ -14,6 +14,7 @@ const AddCourse = () => {
   const [deptError, setDeptError] = useState("");
   const [levelError, setLevelError] = useState("");
   const [numError, setNumError] = useState("");
+  const [err, setErr] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,6 +51,12 @@ const AddCourse = () => {
             navigate("/course", { state: { courseId: data._id } });
           });
         }
+        else if (res.status === 400) {
+          setErr("Invalid info.")
+        }
+        else if (res.status === 409) {
+          setErr("Course exists.")
+        }
       });
     } catch (err) {
       console.error("Error sending POST request:", err);
@@ -65,6 +72,7 @@ const AddCourse = () => {
   };
 
   useEffect(() => {
+    setErr("")
     if (
       courseInfo.dept.length === 3 &&
       courseInfo.level.length === 1 &&
@@ -90,7 +98,11 @@ const AddCourse = () => {
           Add a course you would like to review!
         </div>
       </div>
-
+      <div>
+        <div className="text-red-600">
+          {err}
+        </div>
+      </div>
       <form
         onSubmit={handleSubmit}
         className="flex flex-col justify-center space-y-5"
