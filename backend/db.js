@@ -60,6 +60,13 @@ const createSchemas = () => {
   });
   const isSubscribed = mongoose.model("isSubscribed", isSubscribedSchema);
   models.isSubscribed = isSubscribed;
+  
+  const OpenAiCountSchema = new mongoose.Schema({
+    email: { type: String, required: true },
+    count: { type: Number, required: true },
+  });
+  const OpenAiCount = mongoose.model("OpenAiCount", OpenAiCountSchema);
+  models.OpenAiCount = OpenAiCount;
 };
 
 const init = (url) => {

@@ -14,27 +14,35 @@ exports.post = async (req, res) => {
 };
 module.exports.postIsSubscribed = async (req, res) => {
   const email = req.body.email;
+
   try {
-    const isSB = db.models.isSubscribed.findOne({ email: email });
-    if (isSB != null && email != undefined) {
+    const existingUser = await db.models.isSubscribed.findOne({ email: email });
+
+    if (existingUser) {
       return res.status(400).json({ error: "Already subscribed." });
     }
+    await db.models.isSubscribed.create({ email: email });
 
-    db.models.isSubscribed({ email: email });
-    res.status(200).json({ isSubscribed: true });
+    return res.status(200).json({ isSubscribed: true });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    console.error("Error processing subscription:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 module.exports.getIsSubscribed = async (req, res) => {
   const email = req.query.email;
+
   try {
-    const isSB = db.models.isSubscribed.findOne({ email: email });
-    if (isSB) {
+    const isSubscribed = await db.models.isSubscribed.findOne({ email: email });
+
+    if (isSubscribed) {
       return res.status(200).json({ isSubscribed: true });
     }
+
     return res.status(200).json({ isSubscribed: false });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    console.error("Error checking subscription:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };

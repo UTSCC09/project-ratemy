@@ -7,6 +7,9 @@ const { auth } = require("express-oauth2-jwt-bearer");
 require("dotenv").config();
 // const db = require("../db");
 
+
+
+const openai = require("./openAi");
 const course = require("./course");
 const payment = require("./payment");
 const review = require("./review");
@@ -16,7 +19,7 @@ const jwtCheck = auth({
   issuerBaseURL: "https://ratemy.us.auth0.com/",
   tokenSigningAlg: "RS256",
 });
-
+router.post("/api/ask", openai.post);
 router.post("/api/reviews", review.postReview);
 router.get("/api/reviews/all", review.getReviews);
 router.get("/api/reviews/:id", review.getCourseReviews);
