@@ -77,7 +77,7 @@ const AddCourse = () => {
   }, [courseInfo]);
 
   return (
-    <div className="px-4 my-36 max-w-3xl mx-auto space-y-5">
+    <div className="px-4 my-28 max-w-3xl mx-auto space-y-5">
       <ArrowBackIcon
         fontSize="large"
         onClick={() => {

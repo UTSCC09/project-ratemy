@@ -3,25 +3,23 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const querystring = require("querystring");
-const { auth } = require('express-oauth2-jwt-bearer');
+const { auth } = require("express-oauth2-jwt-bearer");
 require("dotenv").config();
 // const db = require("../db");
 
 
 
+const openai = require("./openAi");
 const course = require("./course");
-
-
-
-
-
+const payment = require("./payment");
 const review = require("./review");
-const jwtCheck = auth({
-  audience: 'https://ratemy/api',
-  issuerBaseURL: 'https://ratemy.us.auth0.com/',
-  tokenSigningAlg: 'RS256'
-});
 
+const jwtCheck = auth({
+  audience: "https://ratemy/api",
+  issuerBaseURL: "https://ratemy.us.auth0.com/",
+  tokenSigningAlg: "RS256",
+});
+router.post("/api/ask", openai.post);
 router.post("/api/reviews", review.postReview);
 router.get("/api/reviews/all", review.getReviews);
 router.get("/api/reviews/:id", review.getCourseReviews);
@@ -31,7 +29,11 @@ router.delete("/api/reviews/:id", review.deleteReview);
 router.post("/api/reviews", review.postReview);
 router.get("/api/reviews/totals/:id", review.getTotalRatings);
 router.post("/api/courses", course.post);
-router.get("/api/courses",jwtCheck, course.getAll);
+router.get("/api/courses/search/:substring", course.search);
+router.get("/api/courses", jwtCheck, course.getAll);
 router.get("/api/courses/:id", course.get);
+router.post("/api/payment", payment.post);
+router.get("/api/isSubscribed", payment.getIsSubscribed);
+router.post("/api/isSubscribed", payment.postIsSubscribed);
 
 module.exports = router;
