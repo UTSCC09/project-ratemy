@@ -8,7 +8,7 @@ const AIField = ({ courseId }) => {
     useAuth0();
 
   const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("Waiting for response ...");
+  const [answer, setAnswer] = useState("Ask a question!");
   const [maxLimitReached, setMaxLimitReached] = useState(false);
   const navigate = useNavigate();
 
