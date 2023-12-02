@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Rating from "@mui/material/Rating";
 
+import { useAuth0 } from "@auth0/auth0-react";
 const ratingsMappings = {
   difficulty: "Difficulty of content",
   quality_of_teaching: "Quality of teaching",
@@ -25,26 +26,25 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
     usefulness_real_world: 0,
     workload: 0,
   });
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 
-  const [email, setEmail] = useState(null);
-
-  useEffect(() => {
-    try {
-      fetch("http://localhost:5000/api/user", {
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.error) {
-            console.error(data.error);
-          } else {
-            setEmail(data);
-          }
-        });
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
+  // useEffect(() => {
+  //   try {
+  //     fetch("http://localhost:5000/api/user", {
+  //       credentials: "include",
+  //     })
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         if (data.error) {
+  //           console.error(data.error);
+  //         } else {
+  //           setEmail(data);
+  //         }
+  //       });
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -53,7 +53,7 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
       course_id: courseId,
       rating: rating,
       review: revData.review,
-      email: email.emails[0].value,
+      email: user.email,
       professor: revData.prof,
     };
     try {

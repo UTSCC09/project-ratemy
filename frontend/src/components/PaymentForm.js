@@ -4,8 +4,11 @@ import {
   useElements,
   PaymentElement,
 } from "@stripe/react-stripe-js";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const PaymentForm = (props) => {
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
+    useAuth0();
   const stripe = useStripe();
   const elements = useElements();
   const [paymentError, setPaymentError] = useState(false);
@@ -13,26 +16,25 @@ const PaymentForm = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!stripe || !elements) {
       return;
     }
-  
+
     try {
       const { error, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: {
           return_url: "http://localhost:3000/",
         },
-        payment_method_options: {
-          // Include the user's email for reference
+        payment_method_data: {
           billing_details: {
-            email: "email",
+            email: user.email,
           },
         },
         redirect: "if_required",
       });
-  
+
       if (error) {
         console.error(error);
         setPaymentError(true);
@@ -40,21 +42,21 @@ const PaymentForm = (props) => {
       } else if (paymentIntent && paymentIntent.status === "succeeded") {
         setPaymentSuccess(true);
         setPaymentError(false);
-        try{
+        try {
           fetch("http://localhost:5000/api/isSubscribed", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              email: "priyankmdave@gmail.com",
+              email: user.email,
             }),
-          } ).then((res) => {res.json()});
-        }
-        catch (err) {
+          }).then((res) => {
+            res.json();
+          });
+        } catch (err) {
           console.error("Error sending POST request:", err);
         }
-       
       } else {
         console.log("Payment failed");
       }
@@ -64,7 +66,6 @@ const PaymentForm = (props) => {
       setPaymentSuccess(false);
     }
   };
-  
 
   return (
     <form onSubmit={handleSubmit}>

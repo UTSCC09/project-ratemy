@@ -15,14 +15,12 @@ exports.post = async (req, res) => {
 module.exports.postIsSubscribed = async (req, res) => {
   const email = req.body.email;
   try {
-    console.log(email);
-    const isSB = db.models.isSubscribed.findOne({email: email});
-    console.log(isSB);
+    const isSB = db.models.isSubscribed.findOne({ email: email });
     if (isSB != null && email != undefined) {
       return res.status(400).json({ error: "Already subscribed." });
     }
 
-    db.models.isSubscribed({email: email});
+    db.models.isSubscribed({ email: email });
     res.status(200).json({ isSubscribed: true });
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -31,7 +29,7 @@ module.exports.postIsSubscribed = async (req, res) => {
 module.exports.getIsSubscribed = async (req, res) => {
   const email = req.query.email;
   try {
-    const isSB = db.models.isSubscribed.findOne({email: email});
+    const isSB = db.models.isSubscribed.findOne({ email: email });
     if (isSB) {
       return res.status(200).json({ isSubscribed: true });
     }
@@ -39,4 +37,4 @@ module.exports.getIsSubscribed = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
-}
+};

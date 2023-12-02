@@ -16,6 +16,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 // Citation: rating component https://mui.com/material-ui/react-rating/
 import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";
+import { useAuth0 } from "@auth0/auth0-react";
 Chart.register(CategoryScale);
 const ratingsMappings = {
   difficulty: "Difficulty of content",
@@ -37,8 +38,10 @@ const CoursePage = () => {
   const [pageIndex, setPageIndex] = useState(0);
   const [maxPage, setMaxPage] = useState(0);
   const limit = 5;
-  const [user, setUser] = useState(null);
-
+  
+  const [editPressed, setEditPressed] = useState(true);
+  const [editedInput, setEditedInput] = useState("");
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
   useEffect(() => {
     try {
       fetch("http://localhost:5000/api/reviews/totals/" + courseId)
@@ -63,23 +66,23 @@ const CoursePage = () => {
     }
   }, [courseId]);
 
-  useEffect(() => {
-    try {
-      fetch("http://localhost:5000/api/user", {
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.error) {
-            console.error(data.error);
-          } else {
-            setUser(data);
-          }
-        });
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
+  // useEffect(() => {
+  //   try {
+  //     fetch("http://localhost:5000/api/user", {
+  //       credentials: "include",
+  //     })
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         if (data.error) {
+  //           console.error(data.error);
+  //         } else {
+  //           setUser(data);
+  //         }
+  //       });
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }, []);
 
   useEffect(() => {
     try {
@@ -105,6 +108,7 @@ const CoursePage = () => {
       )
         .then((res) => res.json())
         .then((data) => {
+          
           setReviews(data.reviews);
           setMaxPage(data.maxPage);
         });
@@ -117,37 +121,40 @@ const CoursePage = () => {
     getData();
   }, [pageIndex, courseId]);
 
-  //   useEffect(() => {
-  //     try {
-  //       fetch(
-  //         "http://localhost:5000/api/reviews/" +
-  //           courseId +
-  //           "?page=" +
-  //           pageIndex +
-  //           "&limit=" +
-  //           limit
-  //       )
-  //         .then((res) => res.json())
-  //         .then((data) => {
-  //           setReviews(data.reviews);
-  //           setMaxPage(data.maxPage);
-  //         });
-  //     } catch (err) {
-  //       console.error(err);
-  //     }
-  //   }, [pageIndex, courseId]);
-
   const handleDelete = async (review) => {
     try {
       await fetch("http://localhost:5000/api/reviews/" + review._id, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: user.emails[0].value }),
+        body: JSON.stringify({ email: user.email }),
       }).then(() => {
         getData();
       });
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleSaveEdit = async (reviewId) => {
+    setEditPressed(true);
+
+    if (editedInput !== "") {
+      try {
+        fetch("http://localhost:5000/api/reviews/" + reviewId, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            review: editedInput,
+            email: user.email,
+          }),
+        });
+      } catch (err) {
+        console.error("Error sending POST request: ", err);
+      }
+
+      setEditedInput("");
     }
   };
 
@@ -218,7 +225,7 @@ const CoursePage = () => {
         </Accordion>
       </div>
 
-      {user ? (
+      {isAuthenticated ? (
         <div>
           <Accordion>
             <AccordionSummary
@@ -248,6 +255,7 @@ const CoursePage = () => {
       <div className="space-y-5">
         <div className="text-xl font-bold text-purple-700">Reviews</div>
         {reviews.map((rev) => {
+          // setEditedInput(rev.review);
           return (
             <div
               key={rev._id}
@@ -259,7 +267,16 @@ const CoursePage = () => {
                   Professor:{" "}
                   <span className="font-normal"> {rev.professor}</span>
                 </div>
-                <div className="font-normal">{rev.review}</div>
+                <textarea
+                  className={`font-normal w-full h-2/3 rounded-xl  ${
+                    !editPressed ? "bg-white p-2" : "bg-inherit"
+                  }`}
+                  onChange={(e) => {
+                    setEditedInput(e.target.value);
+                  }}
+                  defaultValue={editedInput !== "" ? editedInput : rev.review}
+                  disabled={editPressed}
+                ></textarea>
               </div>
 
               <div className="flex flex-col flex-wrap justify-center align-center w-2/6">
@@ -271,10 +288,18 @@ const CoursePage = () => {
                     </div>
                   );
                 })}
-                {user && rev.email === user.emails[0].value && (
+                {isAuthenticated && rev.email === user.email && (
                   <div className="flex space-x-3">
                     <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-black hover:border-black">
-                      <button>Edit Review</button>
+                      {editPressed ? (
+                        <button onClick={() => setEditPressed(false)}>
+                          Edit Review
+                        </button>
+                      ) : (
+                        <button onClick={() => handleSaveEdit(rev._id)}>
+                          Save Edit
+                        </button>
+                      )}
                     </div>
                     <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-red-500 hover:border-red-500">
                       <button onClick={() => handleDelete(rev)}>
