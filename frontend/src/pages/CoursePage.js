@@ -40,11 +40,41 @@ const CoursePage = () => {
   const [pageIndex, setPageIndex] = useState(0);
   const [maxPage, setMaxPage] = useState(0);
   const limit = 5;
+  const [sortBy, setSortBy] = useState("date");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [profFilter, setProfFilter] = useState("");
+
+  const handleFilterChange = (event) => {
+    setProfFilter(event.target.value);
+  };
 
   const [editPressed, setEditPressed] = useState(true);
   const [editedInput, setEditedInput] = useState("");
+  
   const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
     useAuth0();
+
+  const handleSortChange = (event) => {
+    const selectedSort = event.target.value;
+    // Update state variables based on the selected sort
+    if (selectedSort.startsWith('date')) {
+      setSortBy('date');
+      setSortOrder(selectedSort.endsWith('increasing') ? 'asc' : 'desc');
+    }
+    else if (selectedSort.startsWith('ratings-decreasing')) {
+      // citation: https://stackoverflow.com/questions/8376525/get-value-of-a-string-after-last-slash-in-javascript
+      let n = selectedSort.lastIndexOf("ratings-decreasing-")
+      setSortBy(selectedSort.substring(n+19));
+      setSortOrder('desc');
+    }
+    else if (selectedSort.startsWith('ratings-increasing')) {
+      // citation: https://stackoverflow.com/questions/8376525/get-value-of-a-string-after-last-slash-in-javascript
+      let n = selectedSort.lastIndexOf("ratings-increasing-")
+      setSortBy(selectedSort.substring(n+19));
+      setSortOrder('asc');
+    }
+  };
+
   useEffect(() => {
     try {
       fetch("http://localhost:5000/api/reviews/totals/" + courseId)
@@ -89,7 +119,13 @@ const CoursePage = () => {
           "?page=" +
           pageIndex +
           "&limit=" +
-          limit
+          limit +
+          "&sortField=" +
+          sortBy +
+          "&sortOrder=" +
+          sortOrder +
+          "&professor=" +
+          profFilter
       )
         .then((res) => res.json())
         .then((data) => {
@@ -103,7 +139,7 @@ const CoursePage = () => {
 
   useEffect(() => {
     getData();
-  }, [pageIndex, courseId]);
+  }, [profFilter, pageIndex, courseId, sortBy, sortOrder]);
 
   const handleDelete = async (review) => {
     try {
@@ -233,6 +269,47 @@ const CoursePage = () => {
       <div className="space-y-5">
         <AIField courseId={courseId} />
         <div className="text-xl font-bold text-purple-700">Reviews</div>
+        <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2">
+            <span className="text-lg font-bold">Sort by:</span>
+            <select
+              onChange={handleSortChange}
+              className="p-2 rounded-md border-gray-300 focus:outline-none focus:ring focus:border-blue-300"
+            >
+              <option value="date-decreasing">Date (Decreasing)</option>
+              <option value="date-increasing">Date (Increasing)</option>
+              {Object.keys(ratingsMappings).map((ratingKey) => (
+                  <option value={`ratings-increasing-${ratingKey}`}>
+                    {`${ratingsMappings[ratingKey]} (Increasing)`}
+                  </option>
+              ))}
+              {Object.keys(ratingsMappings).map((ratingKey) => (
+                  <option value={`ratings-decreasing-${ratingKey}`}>
+                    {`${ratingsMappings[ratingKey]} (Decreasing)`}
+                  </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <span className="text-lg font-bold">Filter Prof:</span>
+            <select
+              onChange={handleFilterChange}
+              className="p-2 rounded-md border-gray-300 focus:outline-none focus:ring focus:border-blue-300"
+            >
+              <option value="">
+                All
+              </option>
+              {course && course.professorName ? course.professorName.map((prof) => (
+                  <option value={`${prof}`}>
+                    {prof}
+                  </option>
+              )) : ""}
+            </select>
+          </div>
+        </div>
+
+
         {reviews ? reviews.map((rev) => {
           // setEditedInput(rev.review);
           return (
@@ -293,7 +370,7 @@ const CoursePage = () => {
         }) : "No reviews"}
       </div>
 
-      {reviews.length === 0 ? (
+      {reviews == null || reviews.length === 0 ? (
         <div className="text-center p-5 text-xl font-bold">
           There are no reviews yet. Add one!
         </div>

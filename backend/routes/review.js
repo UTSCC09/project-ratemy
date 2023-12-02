@@ -62,7 +62,7 @@ exports.getReviews = async (req, res) => {
             .sort({ [sortField]: sortOrder })
             .skip(page * limit)
             .limit(limit);
-
+        console.log(reviews);
         return res.status(200).json(reviews);
     } catch (err) {
         return res.status(500).json({ error: err.message });
@@ -100,11 +100,21 @@ exports.getCourseReviews = async (req, res) => {
         }
         page = Math.min(page, maxPage);
 
-        const reviews = await db.models.review
-            .find({ course_id: new mongoose.Types.ObjectId(courseId), ...professorFilter })
-            .sort({ [sortField]: sortOrder })
-            .skip(page * limit)
-            .limit(limit);
+        let reviews = [];
+        if (sortField != "date") {
+            reviews = await db.models.review
+                .find({ course_id: new mongoose.Types.ObjectId(courseId), ...professorFilter })
+                .sort({ [`rating.${sortField}`]: sortOrder })
+                .skip(page * limit)
+                .limit(limit);
+        }
+        else {
+            reviews = await db.models.review
+                .find({ course_id: new mongoose.Types.ObjectId(courseId), ...professorFilter })
+                .sort({ [sortField]: sortOrder })
+                .skip(page * limit)
+                .limit(limit);
+        }
         return res.status(200).json({ reviews, maxPage: maxPage + 1 });
     } catch (err) {
         return res.status(500).json({ error: err.message });
