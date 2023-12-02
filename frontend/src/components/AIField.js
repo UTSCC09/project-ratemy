@@ -1,10 +1,20 @@
 import React from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useState } from "react";
 
 const AIField = () => {
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
+    useAuth0();
+
+  const [question, setQuestion] = useState({ question: "" });
+
+  const handleChange = (e) => {
+    setQuestion({ question: e.target.value });
+    console.log(question);
+  };
+
   return (
     <div>
-      {/* <div className="text-xl font-bold">Ask AI!</div> */}
-      {/* onSubmit={handleSubmit} */}
       <form className="flex flex-col space-y-5">
         <div className="">
           <div className="py-2 px-4 font-bold">AI Response: </div>
@@ -15,9 +25,9 @@ const AIField = () => {
           <label>
             <input
               className="border-2  w-full border-gray-400 block rounded py-2 px-4  hover:border-gray-600 hover:border-2 focus:border-purple-700 focus:border-2 focus:outline-none"
-              type="text"
+              type="question"
               name="AIprompt"
-              //   onChange={handleChange}
+              onChange={handleChange}
               placeholder="Ask AI a question based on the reviews"
             />
           </label>
