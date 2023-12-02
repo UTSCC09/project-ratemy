@@ -96,7 +96,7 @@ const CoursePage = () => {
     } catch (err) {
       console.error(err);
     }
-  }, [courseId]);
+  }, [courseId, reviews.length]);
 
   useEffect(() => {
     try {
