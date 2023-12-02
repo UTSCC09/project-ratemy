@@ -17,7 +17,7 @@ module.exports.post = async (req, res) => {
   const existingCourse = await db.models.course.findOne({ code: code });
 
   if (existingCourse) {
-    return res.status(400).json({ error: "Course already exists" });
+    return res.status(409).json({ error: "Course already exists" });
   } else {
     const course = new db.models.course({ name: req.body.name, code: code, date: Date.now() });
     const insertedCourse = await course.save();
@@ -57,7 +57,6 @@ module.exports.get = async (req, res) => {
       return res.status(404).end("Course not found");
     }
     return res.json(course);
-    // 
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Internal Server Error' });

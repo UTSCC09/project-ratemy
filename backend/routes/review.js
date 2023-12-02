@@ -32,6 +32,11 @@ exports.postReview = async (req, res) => {
     const review = new db.models.review(reviewData);
     try {
         const insertedReview = await review.save();
+        const course = await db.models.course.findById(req.body.course_id);
+        if (!course.professorName.includes(req.body.professor)) {
+            course.professorName.push(req.body.professor);
+            const updatedCourse = await course.save();
+        }
         return res.status(200).json(insertedReview);
     } catch (err) {
         return res.status(500).json({ error: err.message });
@@ -50,7 +55,7 @@ exports.getReviews = async (req, res) => {
     const page = req.query.page || 0;
     const limit = req.query.limit || 10;
     const sortField = req.query.sortField || 'date';
-    const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1; 
+    const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
     try {
         const reviews = await db.models.review
             .find()

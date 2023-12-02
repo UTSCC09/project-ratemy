@@ -207,7 +207,7 @@ const CoursePage = () => {
           <AccordionDetails>
             <Typography>
               <div className="flex flex-col justify-center items-center space-y-5">
-                {Object.keys(avgRatings).map((ratingKey) => {
+                {Object.keys(avgRatings) ? Object.keys(avgRatings).map((ratingKey) => {
                   return (
                     <span key={ratingKey}>
                       {ratingsMappings[ratingKey]}
@@ -218,7 +218,7 @@ const CoursePage = () => {
                       />
                     </span>
                   );
-                })}
+                }) : "No ratings"}
               </div>
             </Typography>
           </AccordionDetails>
@@ -254,7 +254,7 @@ const CoursePage = () => {
       )}
       <div className="space-y-5">
         <div className="text-xl font-bold text-purple-700">Reviews</div>
-        {reviews.map((rev) => {
+        {reviews ? reviews.map((rev) => {
           // setEditedInput(rev.review);
           return (
             <div
@@ -280,14 +280,14 @@ const CoursePage = () => {
               </div>
 
               <div className="flex flex-col flex-wrap justify-center align-center w-2/6">
-                {Object.keys(rev.rating).map((ratingKey) => {
+                {Object.keys(rev.rating) ? Object.keys(rev.rating).map((ratingKey) => {
                   return (
                     <div key={rev._id + ratingKey}>
                       <div>{ratingsMappings[ratingKey]}</div>
                       <Rating value={rev.rating[ratingKey]} readOnly />
                     </div>
                   );
-                })}
+                }) : "No ratings"}
                 {isAuthenticated && rev.email === user.email && (
                   <div className="flex space-x-3">
                     <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-black hover:border-black">
@@ -311,7 +311,7 @@ const CoursePage = () => {
               </div>
             </div>
           );
-        })}
+        }) : "No reviews"}
       </div>
 
       {reviews.length === 0 ? (
