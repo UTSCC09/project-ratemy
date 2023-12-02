@@ -249,7 +249,7 @@ const CoursePage = () => {
         </div>
       )}
       <div className="space-y-5">
-        <AIField />
+        <AIField courseId={courseId} />
         <div className="text-xl font-bold text-purple-700">Reviews</div>
         {reviews.map((rev) => {
           // setEditedInput(rev.review);

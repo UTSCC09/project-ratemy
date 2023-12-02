@@ -2,20 +2,44 @@ import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useState } from "react";
 
-const AIField = () => {
+const AIField = ({ courseId }) => {
   const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
     useAuth0();
 
-  const [question, setQuestion] = useState({ question: "" });
+  const [question, setQuestion] = useState("");
 
   const handleChange = (e) => {
-    setQuestion({ question: e.target.value });
-    console.log(question);
+    setQuestion(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.prevenDefault();
+    try {
+      fetch("http://localhost:5000/api/ask", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          question: question,
+          email: user.email,
+          courseId: courseId,
+        }),
+      }).then((res) => {
+        if (res.status === 200) {
+          res.json().then((data) => {
+            console.log(data);
+          });
+        }
+      });
+    } catch (err) {
+      console.error("Error sending POST request:", err);
+    }
   };
 
   return (
     <div>
-      <form className="flex flex-col space-y-5">
+      <form className="flex flex-col space-y-5" onSubmit={handleSubmit}>
         <div className="">
           <div className="py-2 px-4 font-bold">AI Response: </div>
           <div className="py-2 px-4">This is the AI response</div>
