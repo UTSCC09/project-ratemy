@@ -10,6 +10,9 @@ module.exports.post = async (req, res) => {
   const email = req.body.email;
 
   try {
+    if (!email) {
+      return res.status(400).json({ error: "Missing email." });
+    }
     // Check if the user is subscribed
     const isSB = await db.models.isSubscribed.findOne({ email: email });
 
