@@ -11,7 +11,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   const [courses, setCourses] = useState([]);
-  const [searchInput, setSearchInput] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
   const [pageIndex, setPageIndex] = useState(0);
   const limit = 5;
 
