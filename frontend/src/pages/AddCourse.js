@@ -36,7 +36,7 @@ const AddCourse = () => {
 
     try {
       const accessToken = await getAccessTokenSilently();
-      fetch("http://localhost:5000/api/courses", {
+      fetch("https://ratemybe-w9w1.onrender.com/api/courses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

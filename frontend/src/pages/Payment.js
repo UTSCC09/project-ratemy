@@ -19,7 +19,7 @@ const Payment = () => {
   async function getKey() {
     try {
       const accessToken = await getAccessTokenSilently();
-      await fetch("http://localhost:5000/api/payment", {
+      await fetch("https://ratemybe-w9w1.onrender.com/api/payment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
