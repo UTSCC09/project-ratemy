@@ -70,6 +70,7 @@ const Home = () => {
       const data = await response.json();
 
       setCourses(data.courses);
+      setMaxPage(data.maxPage);
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
@@ -162,7 +163,7 @@ const Home = () => {
         <div className="flex flex-row-reverse justify-between">
           <button
             className="rounded-xl px-2 py-3 w-fit
-          bg-purple-600 text-white font-bold hover:bg-purple-700"
+          bg-purple-600 text-white font-bold hover:bg-purple-700 disabled:bg:purple-300"
             onClick={() => setPageIndex((prev) => prev + 1)}
             disabled={maxPage - 1 === pageIndex}
           >

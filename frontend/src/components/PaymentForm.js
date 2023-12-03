@@ -9,6 +9,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 const PaymentForm = (props) => {
   const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
     useAuth0();
+
+  //Citation: https://stripe.com/docs/stripe-js/react
   const stripe = useStripe();
   const elements = useElements();
   const [paymentError, setPaymentError] = useState(false);
@@ -17,6 +19,7 @@ const PaymentForm = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    //Citation: https://stripe.com/docs/stripe-js/react
     if (!stripe || !elements) {
       return;
     }
@@ -26,11 +29,6 @@ const PaymentForm = (props) => {
         elements,
         confirmParams: {
           return_url: "http://localhost:3000/",
-        },
-        payment_method_data: {
-          billing_details: {
-            email: user.email,
-          },
         },
         redirect: "if_required",
       });
@@ -75,6 +73,7 @@ const PaymentForm = (props) => {
         <div className="text-3xl">
           Total Amount: <span className="font-bold">$9.99</span>
         </div>
+        {/* Citation: https://stripe.com/docs/stripe-js/react */}
         <PaymentElement />
         {paymentError && (
           <div className="text-red-600">Error with the payment, try again!</div>

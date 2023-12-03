@@ -1,6 +1,8 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const db = require("../db");
+
 exports.post = async (req, res) => {
+  //Citation: https://stripe.com/docs/payments/payment-intents
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       payment_method_types: ["card"],
