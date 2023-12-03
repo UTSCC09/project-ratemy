@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const AddCourse = () => {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ const AddCourse = () => {
   const [levelError, setLevelError] = useState("");
   const [numError, setNumError] = useState("");
   const [err, setErr] = useState("");
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
+    useAuth0();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
