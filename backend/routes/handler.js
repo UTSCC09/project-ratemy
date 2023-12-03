@@ -19,21 +19,20 @@ const jwtCheck = auth({
   issuerBaseURL: "https://ratemy.us.auth0.com/",
   tokenSigningAlg: "RS256",
 });
-router.post("/api/ask", openai.post);
-router.post("/api/reviews", review.postReview);
+router.post("/api/ask",jwtCheck, openai.post);
+router.post("/api/reviews",jwtCheck, review.postReview);
 router.get("/api/reviews/all", review.getReviews);
 router.get("/api/reviews/:id", review.getCourseReviews);
 router.get("/api/reviews/averages/:id", review.getRatingAverages);
-router.patch("/api/reviews/:id", review.patchReview);
-router.delete("/api/reviews/:id", review.deleteReview);
-router.post("/api/reviews", review.postReview);
+router.patch("/api/reviews/:id",jwtCheck, review.patchReview);
+router.delete("/api/reviews/:id",jwtCheck, review.deleteReview);
 router.get("/api/reviews/totals/:id", review.getTotalRatings);
-router.post("/api/courses", course.post);
+router.post("/api/courses",jwtCheck, course.post);
 router.get("/api/courses/search/:substring", course.search);
-router.get("/api/courses", jwtCheck, course.getAll);
+router.get("/api/courses", course.getAll);
 router.get("/api/courses/:id", course.get);
-router.post("/api/payment", payment.post);
+router.post("/api/payment",jwtCheck, payment.post);
 router.get("/api/isSubscribed", payment.getIsSubscribed);
-router.post("/api/isSubscribed", payment.postIsSubscribed);
+router.post("/api/isSubscribed",jwtCheck, payment.postIsSubscribed);
 
 module.exports = router;
