@@ -13,7 +13,8 @@ const openai = require("./openAi");
 const course = require("./course");
 const payment = require("./payment");
 const review = require("./review");
-
+//Citation: https://auth0.com/blog/complete-guide-to-react-user-authentication/
+//Citation: https://auth0.com/docs/quickstart/backend/nodejs/interactive
 const jwtCheck = auth({
   audience: "https://ratemy/api",
   issuerBaseURL: "https://ratemy.us.auth0.com/",

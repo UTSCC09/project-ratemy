@@ -16,6 +16,7 @@ const Home = () => {
   const limit = 5;
 
   const [maxPage, setMaxPage] = useState(0);
+  // Citation: https://auth0.com/docs/secure/tokens/access-tokens/get-access-tokens
   const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
     useAuth0();
 
