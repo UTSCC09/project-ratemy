@@ -32,10 +32,12 @@ const AddCourse = () => {
     else setNumError("");
 
     try {
+      const accessToken = await getAccessTokenSilently();
       fetch("http://localhost:5000/api/courses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
           name: courseInfo.name,
@@ -50,12 +52,10 @@ const AddCourse = () => {
           res.json().then((data) => {
             navigate("/course", { state: { courseId: data._id } });
           });
-        }
-        else if (res.status === 400) {
-          setErr("Invalid info.")
-        }
-        else if (res.status === 409) {
-          setErr("Course exists.")
+        } else if (res.status === 400) {
+          setErr("Invalid info.");
+        } else if (res.status === 409) {
+          setErr("Course exists.");
         }
       });
     } catch (err) {
@@ -72,7 +72,7 @@ const AddCourse = () => {
   };
 
   useEffect(() => {
-    setErr("")
+    setErr("");
     if (
       courseInfo.dept.length === 3 &&
       courseInfo.level.length === 1 &&
@@ -99,9 +99,7 @@ const AddCourse = () => {
         </div>
       </div>
       <div>
-        <div className="text-red-600">
-          {err}
-        </div>
+        <div className="text-red-600">{err}</div>
       </div>
       <form
         onSubmit={handleSubmit}

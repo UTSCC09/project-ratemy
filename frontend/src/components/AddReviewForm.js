@@ -34,7 +34,8 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
     usefulness_real_world: 0,
     workload: 0,
   });
-  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
+    useAuth0();
 
   const getCourse = () => {
     try {
@@ -50,7 +51,7 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
 
   useEffect(() => {
     getCourse();
-  }, [])
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -63,10 +64,12 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
       professor: revData.prof,
     };
     try {
+      const accessToken = await getAccessTokenSilently();
       fetch("http://localhost:5000/api/reviews/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify(bodyObject),
       }).then((res) => {
@@ -106,27 +109,29 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex flex-col">
-        {Object.keys(rating) ? Object.keys(rating).map((ratingKey) => {
-          return (
-            <div
-              key={ratingKey}
-              className="flex flex-col justify-center items-center border hover:border-purple-700 rounded-xl p-5 gap-3 my-3 w-4/6 mx-auto"
-            >
-              <span className="text-lg flex justify-between">
-                {ratingsMappings[ratingKey]}
-                <Rating
-                  value={rating[ratingKey]}
-                  onChange={(event, newValue) => {
-                    var rev = { ...rating };
-                    rev[ratingKey] = newValue;
-                    setRating(rev);
-                  }}
-                  name="simple-controlled"
-                />
-              </span>
-            </div>
-          );
-        }) : "No ratings"}
+        {Object.keys(rating)
+          ? Object.keys(rating).map((ratingKey) => {
+              return (
+                <div
+                  key={ratingKey}
+                  className="flex flex-col justify-center items-center border hover:border-purple-700 rounded-xl p-5 gap-3 my-3 w-4/6 mx-auto"
+                >
+                  <span className="text-lg flex justify-between">
+                    {ratingsMappings[ratingKey]}
+                    <Rating
+                      value={rating[ratingKey]}
+                      onChange={(event, newValue) => {
+                        var rev = { ...rating };
+                        rev[ratingKey] = newValue;
+                        setRating(rev);
+                      }}
+                      name="simple-controlled"
+                    />
+                  </span>
+                </div>
+              );
+            })
+          : "No ratings"}
         {/* <div className="w-4/6 mx-auto">
           <label>Professor:</label>
           <input
@@ -150,11 +155,13 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
             <option value="" disabled>
               Select a professor or add a new one
             </option>
-            {course.professorName ? course.professorName.map((professor) => (
-              <option key={professor} value={professor}>
-                {professor}
-              </option>
-            )) : ""}
+            {course.professorName
+              ? course.professorName.map((professor) => (
+                  <option key={professor} value={professor}>
+                    {professor}
+                  </option>
+                ))
+              : ""}
             <option value="addNew">Add New Professor</option>
           </select>
           {addNewProf && (

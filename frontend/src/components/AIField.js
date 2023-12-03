@@ -20,10 +20,12 @@ const AIField = ({ courseId }) => {
     e.preventDefault();
     setAnswer("Waiting for response ...");
     try {
+      const accessToken = await getAccessTokenSilently();
       fetch("http://localhost:5000/api/ask", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
           question: question,

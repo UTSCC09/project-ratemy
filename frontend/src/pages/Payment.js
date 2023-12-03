@@ -17,10 +17,12 @@ const Payment = () => {
 
   async function getKey() {
     try {
+      const accessToken = await getAccessTokenSilently();
       await fetch("http://localhost:5000/api/payment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
       })
         .then((res) => res.json())

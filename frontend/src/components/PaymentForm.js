@@ -43,10 +43,12 @@ const PaymentForm = (props) => {
         setPaymentSuccess(true);
         setPaymentError(false);
         try {
+          const accessToken = await getAccessTokenSilently();
           fetch("http://localhost:5000/api/isSubscribed", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
             },
             body: JSON.stringify({
               email: user.email,

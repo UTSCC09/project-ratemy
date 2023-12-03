@@ -51,15 +51,15 @@ const Home = () => {
   const fetchCourses = async () => {
     try {
       // Get the access token
-      const accessToken = await getAccessTokenSilently();
+      // const accessToken = await getAccessTokenSilently();
 
       // Make the fetch request with the access token in the Authorization header
       const response = await fetch(
         `http://localhost:5000/api/courses?page=${pageIndex}&limit=${limit}`,
         {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+          // headers: {
+          //   Authorization: `Bearer ${accessToken}`,
+          // },
         }
       );
 

@@ -56,21 +56,19 @@ const CoursePage = () => {
   const handleSortChange = (event) => {
     const selectedSort = event.target.value;
     // Update state variables based on the selected sort
-    if (selectedSort.startsWith('date')) {
-      setSortBy('date');
-      setSortOrder(selectedSort.endsWith('increasing') ? 'asc' : 'desc');
-    }
-    else if (selectedSort.startsWith('ratings-decreasing')) {
+    if (selectedSort.startsWith("date")) {
+      setSortBy("date");
+      setSortOrder(selectedSort.endsWith("increasing") ? "asc" : "desc");
+    } else if (selectedSort.startsWith("ratings-decreasing")) {
       // citation: https://stackoverflow.com/questions/8376525/get-value-of-a-string-after-last-slash-in-javascript
-      let n = selectedSort.lastIndexOf("ratings-decreasing-")
-      setSortBy(selectedSort.substring(n+19));
-      setSortOrder('desc');
-    }
-    else if (selectedSort.startsWith('ratings-increasing')) {
+      let n = selectedSort.lastIndexOf("ratings-decreasing-");
+      setSortBy(selectedSort.substring(n + 19));
+      setSortOrder("desc");
+    } else if (selectedSort.startsWith("ratings-increasing")) {
       // citation: https://stackoverflow.com/questions/8376525/get-value-of-a-string-after-last-slash-in-javascript
-      let n = selectedSort.lastIndexOf("ratings-increasing-")
-      setSortBy(selectedSort.substring(n+19));
-      setSortOrder('asc');
+      let n = selectedSort.lastIndexOf("ratings-increasing-");
+      setSortBy(selectedSort.substring(n + 19));
+      setSortOrder("asc");
     }
   };
 
@@ -142,9 +140,13 @@ const CoursePage = () => {
 
   const handleDelete = async (review) => {
     try {
+      const accessToken = await getAccessTokenSilently();
       await fetch("http://localhost:5000/api/reviews/" + review._id, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
         body: JSON.stringify({ email: user.email }),
       }).then(() => {
         getData();
@@ -159,10 +161,12 @@ const CoursePage = () => {
 
     if (editedInput !== "") {
       try {
+        const accessToken = await getAccessTokenSilently();
         fetch("http://localhost:5000/api/reviews/" + reviewId, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
           },
           body: JSON.stringify({
             review: editedInput,
@@ -221,21 +225,23 @@ const CoursePage = () => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>
-              <div className="flex flex-col justify-center items-center space-y-5">
-                {Object.keys(avgRatings) ? Object.keys(avgRatings).map((ratingKey) => {
-                  return (
-                    <span key={ratingKey}>
-                      {ratingsMappings[ratingKey]}
-                      <Rating
-                        value={avgRatings[ratingKey]}
-                        precision={0.5}
-                        readOnly
-                      />
-                    </span>
-                  );
-                }) : "No ratings"}
-              </div>
+          <Typography component="div">
+            <div className="flex flex-col justify-center items-center space-y-5">
+              {Object.keys(avgRatings)
+                ? Object.keys(avgRatings).map((ratingKey) => {
+                    return (
+                      <span key={ratingKey}>
+                        {ratingsMappings[ratingKey]}
+                        <Rating
+                          value={avgRatings[ratingKey]}
+                          precision={0.5}
+                          readOnly
+                        />
+                      </span>
+                    );
+                  })
+                : "No ratings"}
+            </div>
           </Typography>
         </AccordionDetails>
       </Accordion>
@@ -266,7 +272,7 @@ const CoursePage = () => {
         </div>
       )}
       <div className="space-y-5">
-        <AIField courseId={courseId} />
+        {user && <AIField courseId={courseId} />}
         <div className="text-xl font-bold text-purple-700">Reviews</div>
         <div className="flex items-center space-x-2">
           <div className="flex items-center space-x-2">
@@ -278,14 +284,14 @@ const CoursePage = () => {
               <option value="date-decreasing">Date (Decreasing)</option>
               <option value="date-increasing">Date (Increasing)</option>
               {Object.keys(ratingsMappings).map((ratingKey) => (
-                  <option value={`ratings-increasing-${ratingKey}`}>
-                    {`${ratingsMappings[ratingKey]} (Increasing)`}
-                  </option>
+                <option value={`ratings-increasing-${ratingKey}`}>
+                  {`${ratingsMappings[ratingKey]} (Increasing)`}
+                </option>
               ))}
               {Object.keys(ratingsMappings).map((ratingKey) => (
-                  <option value={`ratings-decreasing-${ratingKey}`}>
-                    {`${ratingsMappings[ratingKey]} (Decreasing)`}
-                  </option>
+                <option value={`ratings-decreasing-${ratingKey}`}>
+                  {`${ratingsMappings[ratingKey]} (Decreasing)`}
+                </option>
               ))}
             </select>
           </div>
@@ -296,77 +302,80 @@ const CoursePage = () => {
               onChange={handleFilterChange}
               className="p-2 rounded-md border-gray-300 focus:outline-none focus:ring focus:border-blue-300"
             >
-              <option value="">
-                All
-              </option>
-              {course && course.professorName ? course.professorName.map((prof) => (
-                  <option value={`${prof}`}>
-                    {prof}
-                  </option>
-              )) : ""}
+              <option value="">All</option>
+              {course && course.professorName
+                ? course.professorName.map((prof) => (
+                    <option value={`${prof}`}>{prof}</option>
+                  ))
+                : ""}
             </select>
           </div>
         </div>
 
-
-        {reviews ? reviews.map((rev) => {
-          // setEditedInput(rev.review);
-          return (
-            <div
-              key={rev._id}
-              className="font-bold hover:text-black hover:bg-gray-200 flex justify-between text-base p-5 rounded-xl bg-slate-50 space-x-5"
-            >
-              <div className="w-4/6">
-                <div>Review</div>
-                <div>
-                  Professor:{" "}
-                  <span className="font-normal"> {rev.professor}</span>
-                </div>
-                <textarea
-                  className={`font-normal w-full h-2/3 rounded-xl  ${
-                    !editPressed ? "bg-white p-2" : "bg-inherit"
-                  }`}
-                  onChange={(e) => {
-                    setEditedInput(e.target.value);
-                  }}
-                  defaultValue={editedInput !== "" ? editedInput : rev.review}
-                  disabled={editPressed}
-                ></textarea>
-              </div>
-
-              <div className="flex flex-col flex-wrap justify-center align-center w-2/6">
-                {Object.keys(rev.rating) ? Object.keys(rev.rating).map((ratingKey) => {
-                  return (
-                    <div key={rev._id + ratingKey}>
-                      <div>{ratingsMappings[ratingKey]}</div>
-                      <Rating value={rev.rating[ratingKey]} readOnly />
+        {reviews
+          ? reviews.map((rev) => {
+              // setEditedInput(rev.review);
+              return (
+                <div
+                  key={rev._id}
+                  className="font-bold hover:text-black hover:bg-gray-200 flex justify-between text-base p-5 rounded-xl bg-slate-50 space-x-5"
+                >
+                  <div className="w-4/6">
+                    <div>Review</div>
+                    <div>
+                      Professor:{" "}
+                      <span className="font-normal"> {rev.professor}</span>
                     </div>
-                  );
-                }) : "No ratings"}
-                {isAuthenticated && rev.email === user.email && (
-                  <div className="flex space-x-3">
-                    <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-black hover:border-black">
-                      {editPressed ? (
-                        <button onClick={() => setEditPressed(false)}>
-                          Edit Review
-                        </button>
-                      ) : (
-                        <button onClick={() => handleSaveEdit(rev._id)}>
-                          Save Edit
-                        </button>
-                      )}
-                    </div>
-                    <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-red-500 hover:border-red-500">
-                      <button onClick={() => handleDelete(rev)}>
-                        Delete Review
-                      </button>
-                    </div>
+                    <textarea
+                      className={`font-normal w-full h-2/3 rounded-xl  ${
+                        !editPressed ? "bg-white p-2" : "bg-inherit"
+                      }`}
+                      onChange={(e) => {
+                        setEditedInput(e.target.value);
+                      }}
+                      defaultValue={
+                        editedInput !== "" ? editedInput : rev.review
+                      }
+                      disabled={editPressed}
+                    ></textarea>
                   </div>
-                )}
-              </div>
-            </div>
-          );
-        }) : "No reviews"}
+
+                  <div className="flex flex-col flex-wrap justify-center align-center w-2/6">
+                    {Object.keys(rev.rating)
+                      ? Object.keys(rev.rating).map((ratingKey) => {
+                          return (
+                            <div key={rev._id + ratingKey}>
+                              <div>{ratingsMappings[ratingKey]}</div>
+                              <Rating value={rev.rating[ratingKey]} readOnly />
+                            </div>
+                          );
+                        })
+                      : "No ratings"}
+                    {isAuthenticated && rev.email === user.email && (
+                      <div className="flex space-x-3">
+                        <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-black hover:border-black">
+                          {editPressed ? (
+                            <button onClick={() => setEditPressed(false)}>
+                              Edit Review
+                            </button>
+                          ) : (
+                            <button onClick={() => handleSaveEdit(rev._id)}>
+                              Save Edit
+                            </button>
+                          )}
+                        </div>
+                        <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-red-500 hover:border-red-500">
+                          <button onClick={() => handleDelete(rev)}>
+                            Delete Review
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          : "No reviews"}
       </div>
 
       {reviews == null || reviews.length === 0 ? (
