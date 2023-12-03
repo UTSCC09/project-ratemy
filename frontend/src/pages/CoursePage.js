@@ -74,7 +74,7 @@ const CoursePage = () => {
 
   useEffect(() => {
     try {
-      fetch("http://localhost:5000/api/reviews/totals/" + courseId)
+      fetch("https://ratemybe-w9w1.onrender.com/api/reviews/totals/" + courseId)
         .then((res) => res.json())
         .then((data) => {
           setTotalsRatings(data);
@@ -86,7 +86,7 @@ const CoursePage = () => {
   // an empty deps array -> only runs once on initial render
   useEffect(() => {
     try {
-      fetch("http://localhost:5000/api/courses/" + courseId)
+      fetch("https://ratemybe-w9w1.onrender.com/api/courses/" + courseId)
         .then((res) => res.json())
         .then((data) => {
           setCourse(data);
@@ -98,7 +98,7 @@ const CoursePage = () => {
 
   useEffect(() => {
     try {
-      fetch("http://localhost:5000/api/reviews/averages/" + courseId)
+      fetch("https://ratemybe-w9w1.onrender.com/api/reviews/averages/" + courseId)
         .then((res) => res.json())
         .then((data) => {
           setAvgRatings(data);
@@ -111,18 +111,18 @@ const CoursePage = () => {
   const getData = async () => {
     try {
       fetch(
-        "http://localhost:5000/api/reviews/" +
-          courseId +
-          "?page=" +
-          pageIndex +
-          "&limit=" +
-          limit +
-          "&sortField=" +
-          sortBy +
-          "&sortOrder=" +
-          sortOrder +
-          "&professor=" +
-          profFilter
+        "https://ratemybe-w9w1.onrender.com/api/reviews/" +
+        courseId +
+        "?page=" +
+        pageIndex +
+        "&limit=" +
+        limit +
+        "&sortField=" +
+        sortBy +
+        "&sortOrder=" +
+        sortOrder +
+        "&professor=" +
+        profFilter
       )
         .then((res) => res.json())
         .then((data) => {
@@ -141,7 +141,7 @@ const CoursePage = () => {
   const handleDelete = async (review) => {
     try {
       const accessToken = await getAccessTokenSilently();
-      await fetch("http://localhost:5000/api/reviews/" + review._id, {
+      await fetch("https://ratemybe-w9w1.onrender.com/api/reviews/" + review._id, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -162,7 +162,7 @@ const CoursePage = () => {
     if (editedInput !== "") {
       try {
         const accessToken = await getAccessTokenSilently();
-        fetch("http://localhost:5000/api/reviews/" + reviewId, {
+        fetch("https://ratemybe-w9w1.onrender.com/api/reviews/" + reviewId, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -229,17 +229,17 @@ const CoursePage = () => {
             <div className="flex flex-col justify-center items-center space-y-5">
               {Object.keys(avgRatings)
                 ? Object.keys(avgRatings).map((ratingKey) => {
-                    return (
-                      <span key={ratingKey}>
-                        {ratingsMappings[ratingKey]}
-                        <Rating
-                          value={avgRatings[ratingKey]}
-                          precision={0.5}
-                          readOnly
-                        />
-                      </span>
-                    );
-                  })
+                  return (
+                    <span key={ratingKey}>
+                      {ratingsMappings[ratingKey]}
+                      <Rating
+                        value={avgRatings[ratingKey]}
+                        precision={0.5}
+                        readOnly
+                      />
+                    </span>
+                  );
+                })
                 : "No ratings"}
             </div>
           </Typography>
@@ -305,8 +305,8 @@ const CoursePage = () => {
               <option value="">All</option>
               {course && course.professorName
                 ? course.professorName.map((prof) => (
-                    <option value={`${prof}`}>{prof}</option>
-                  ))
+                  <option value={`${prof}`}>{prof}</option>
+                ))
                 : ""}
             </select>
           </div>
@@ -314,67 +314,66 @@ const CoursePage = () => {
 
         {reviews
           ? reviews.map((rev) => {
-              // setEditedInput(rev.review);
-              return (
-                <div
-                  key={rev._id}
-                  className="font-bold hover:text-black hover:bg-gray-200 flex justify-between text-base p-5 rounded-xl bg-slate-50 space-x-5"
-                >
-                  <div className="w-4/6">
-                    <div>Review</div>
-                    <div>
-                      Professor:{" "}
-                      <span className="font-normal"> {rev.professor}</span>
-                    </div>
-                    <textarea
-                      className={`font-normal w-full h-2/3 rounded-xl  ${
-                        !editPressed ? "bg-white p-2" : "bg-inherit"
+            // setEditedInput(rev.review);
+            return (
+              <div
+                key={rev._id}
+                className="font-bold hover:text-black hover:bg-gray-200 flex justify-between text-base p-5 rounded-xl bg-slate-50 space-x-5"
+              >
+                <div className="w-4/6">
+                  <div>Review</div>
+                  <div>
+                    Professor:{" "}
+                    <span className="font-normal"> {rev.professor}</span>
+                  </div>
+                  <textarea
+                    className={`font-normal w-full h-2/3 rounded-xl  ${!editPressed ? "bg-white p-2" : "bg-inherit"
                       }`}
-                      onChange={(e) => {
-                        setEditedInput(e.target.value);
-                      }}
-                      defaultValue={
-                        editedInput !== "" ? editedInput : rev.review
-                      }
-                      disabled={editPressed}
-                    ></textarea>
-                  </div>
-
-                  <div className="flex flex-col flex-wrap justify-center align-center w-2/6">
-                    {Object.keys(rev.rating)
-                      ? Object.keys(rev.rating).map((ratingKey) => {
-                          return (
-                            <div key={rev._id + ratingKey}>
-                              <div>{ratingsMappings[ratingKey]}</div>
-                              <Rating value={rev.rating[ratingKey]} readOnly />
-                            </div>
-                          );
-                        })
-                      : "No ratings"}
-                    {isAuthenticated && rev.email === user.email && (
-                      <div className="flex space-x-3">
-                        <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-black hover:border-black">
-                          {editPressed ? (
-                            <button onClick={() => setEditPressed(false)}>
-                              Edit Review
-                            </button>
-                          ) : (
-                            <button onClick={() => handleSaveEdit(rev._id)}>
-                              Save Edit
-                            </button>
-                          )}
-                        </div>
-                        <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-red-500 hover:border-red-500">
-                          <button onClick={() => handleDelete(rev)}>
-                            Delete Review
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                    onChange={(e) => {
+                      setEditedInput(e.target.value);
+                    }}
+                    defaultValue={
+                      editedInput !== "" ? editedInput : rev.review
+                    }
+                    disabled={editPressed}
+                  ></textarea>
                 </div>
-              );
-            })
+
+                <div className="flex flex-col flex-wrap justify-center align-center w-2/6">
+                  {Object.keys(rev.rating)
+                    ? Object.keys(rev.rating).map((ratingKey) => {
+                      return (
+                        <div key={rev._id + ratingKey}>
+                          <div>{ratingsMappings[ratingKey]}</div>
+                          <Rating value={rev.rating[ratingKey]} readOnly />
+                        </div>
+                      );
+                    })
+                    : "No ratings"}
+                  {isAuthenticated && rev.email === user.email && (
+                    <div className="flex space-x-3">
+                      <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-black hover:border-black">
+                        {editPressed ? (
+                          <button onClick={() => setEditPressed(false)}>
+                            Edit Review
+                          </button>
+                        ) : (
+                          <button onClick={() => handleSaveEdit(rev._id)}>
+                            Save Edit
+                          </button>
+                        )}
+                      </div>
+                      <div className="border-2 border-gray-400 rounded-xl px-2 py-3 w-fit h-fit hover:text-red-500 hover:border-red-500">
+                        <button onClick={() => handleDelete(rev)}>
+                          Delete Review
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })
           : "No reviews"}
       </div>
 

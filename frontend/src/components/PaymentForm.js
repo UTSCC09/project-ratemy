@@ -25,7 +25,7 @@ const PaymentForm = (props) => {
       const { error, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: "http://localhost:3000/",
+          return_url: "https://ratemyc.vercel.app/",
         },
         payment_method_data: {
           billing_details: {
@@ -44,7 +44,7 @@ const PaymentForm = (props) => {
         setPaymentError(false);
         try {
           const accessToken = await getAccessTokenSilently();
-          fetch("http://localhost:5000/api/isSubscribed", {
+          fetch("https://ratemybe-w9w1.onrender.com/api/isSubscribed", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

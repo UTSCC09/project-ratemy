@@ -29,7 +29,7 @@ const Home = () => {
     try {
       const accessToken = await getAccessTokenSilently();
       const response = await fetch(
-        `http://localhost:5000/api/courses/search/${searchInput}?page=${pageIndex}&limit=${limit}`,
+        `https://ratemybe-w9w1.onrender.com/api/courses/search/${searchInput}?page=${pageIndex}&limit=${limit}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -55,7 +55,7 @@ const Home = () => {
 
       // Make the fetch request with the access token in the Authorization header
       const response = await fetch(
-        `http://localhost:5000/api/courses?page=${pageIndex}&limit=${limit}`,
+        `https://ratemybe-w9w1.onrender.com/api/courses?page=${pageIndex}&limit=${limit}`,
         {
           // headers: {
           //   Authorization: `Bearer ${accessToken}`,
@@ -145,18 +145,18 @@ const Home = () => {
         <div className="flex flex-col text-left px-4 py-4 space-y-3 my-4 text-purple-700 border-solid border border-black rounded-xl">
           {courses != null
             ? courses.map((course) => {
-                return (
-                  <button
-                    key={course._id}
-                    onClick={() => {
-                      navigate("/course", { state: { courseId: course._id } });
-                    }}
-                    className="font-bold text-2xl hover:text-black hover:bg-gray-200"
-                  >
-                    {course.code}
-                  </button>
-                );
-              })
+              return (
+                <button
+                  key={course._id}
+                  onClick={() => {
+                    navigate("/course", { state: { courseId: course._id } });
+                  }}
+                  className="font-bold text-2xl hover:text-black hover:bg-gray-200"
+                >
+                  {course.code}
+                </button>
+              );
+            })
             : "aa"}
         </div>
         <div className="flex flex-row-reverse justify-between">

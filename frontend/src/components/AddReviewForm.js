@@ -39,7 +39,7 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
 
   const getCourse = () => {
     try {
-      fetch("http://localhost:5000/api/courses/" + courseId)
+      fetch("https://ratemybe-w9w1.onrender.com/api/courses/" + courseId)
         .then((res) => res.json())
         .then((data) => {
           setCourse(data);
@@ -65,7 +65,7 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
     };
     try {
       const accessToken = await getAccessTokenSilently();
-      fetch("http://localhost:5000/api/reviews/", {
+      fetch("https://ratemybe-w9w1.onrender.com/api/reviews/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -111,26 +111,26 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
       <div className="flex flex-col">
         {Object.keys(rating)
           ? Object.keys(rating).map((ratingKey) => {
-              return (
-                <div
-                  key={ratingKey}
-                  className="flex flex-col justify-center items-center border hover:border-purple-700 rounded-xl p-5 gap-3 my-3 w-4/6 mx-auto"
-                >
-                  <span className="text-lg flex justify-between">
-                    {ratingsMappings[ratingKey]}
-                    <Rating
-                      value={rating[ratingKey]}
-                      onChange={(event, newValue) => {
-                        var rev = { ...rating };
-                        rev[ratingKey] = newValue;
-                        setRating(rev);
-                      }}
-                      name="simple-controlled"
-                    />
-                  </span>
-                </div>
-              );
-            })
+            return (
+              <div
+                key={ratingKey}
+                className="flex flex-col justify-center items-center border hover:border-purple-700 rounded-xl p-5 gap-3 my-3 w-4/6 mx-auto"
+              >
+                <span className="text-lg flex justify-between">
+                  {ratingsMappings[ratingKey]}
+                  <Rating
+                    value={rating[ratingKey]}
+                    onChange={(event, newValue) => {
+                      var rev = { ...rating };
+                      rev[ratingKey] = newValue;
+                      setRating(rev);
+                    }}
+                    name="simple-controlled"
+                  />
+                </span>
+              </div>
+            );
+          })
           : "No ratings"}
         {/* <div className="w-4/6 mx-auto">
           <label>Professor:</label>
@@ -157,10 +157,10 @@ const CoursePage = ({ courseId, reviews, setReviews }) => {
             </option>
             {course.professorName
               ? course.professorName.map((professor) => (
-                  <option key={professor} value={professor}>
-                    {professor}
-                  </option>
-                ))
+                <option key={professor} value={professor}>
+                  {professor}
+                </option>
+              ))
               : ""}
             <option value="addNew">Add New Professor</option>
           </select>
