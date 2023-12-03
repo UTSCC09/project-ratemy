@@ -45,6 +45,7 @@ const AIField = ({ courseId }) => {
           );
         }
       });
+      setQuestion("");
     } catch (err) {
       console.error("Error sending POST request:", err);
     }
@@ -63,6 +64,7 @@ const AIField = ({ courseId }) => {
             <input
               className="border-2  w-full border-gray-400 block rounded py-2 px-4  hover:border-gray-600 hover:border-2 focus:border-purple-700 focus:border-2 focus:outline-none"
               type="question"
+              value={question}
               onChange={handleChange}
               placeholder="Ask AI a question based on the reviews"
             />
