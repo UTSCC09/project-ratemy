@@ -195,6 +195,7 @@ const CoursePage = () => {
       <div></div>
       <div>
         {totalsRatings["totals"] ? (
+          //Citation: https://www.youtube.com/watch?v=t4XH7XwUqa0
           <Accordion>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -215,6 +216,7 @@ const CoursePage = () => {
         )}
       </div>
 
+      {/* Citation: https://www.youtube.com/watch?v=t4XH7XwUqa0 */}
       <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -247,6 +249,7 @@ const CoursePage = () => {
       </Accordion>
 
       {isAuthenticated ? (
+        //Citation: https://www.youtube.com/watch?v=t4XH7XwUqa0
         <Accordion>
           <AccordionSummary
             expandIcon={<AddIcon />}
