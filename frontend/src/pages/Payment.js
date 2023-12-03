@@ -7,6 +7,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import PaymentForm from "../components/PaymentForm";
 import { useAuth0 } from "@auth0/auth0-react";
+
+//Citation: https://stripe.com/docs/stripe-js/react
 const stripePromise = loadStripe(
   "pk_test_51OHVzAJac0biPzxDgkEsvPO2s7hKHLFIYQKxSE9crSnkDWHJLUwD3y8QentAeWDWZUAVCjGbpMWpbRqVjvSDIPPU00Dcf9qdbb"
 );
@@ -15,6 +17,8 @@ const Payment = () => {
   const { getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
   const [clientSecret, setClientSecret] = useState(null);
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
+    useAuth0();
 
   async function getKey() {
     try {
@@ -57,6 +61,7 @@ const Payment = () => {
         prompts, and much more!
       </div>
       {clientSecret && (
+        //Citation: https://stripe.com/docs/stripe-js/react
         <Elements stripe={stripePromise} options={options}>
           <PaymentForm />
         </Elements>
