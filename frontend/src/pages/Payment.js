@@ -6,12 +6,13 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import PaymentForm from "../components/PaymentForm";
-
+import { useAuth0 } from "@auth0/auth0-react";
 const stripePromise = loadStripe(
   "pk_test_51OHVzAJac0biPzxDgkEsvPO2s7hKHLFIYQKxSE9crSnkDWHJLUwD3y8QentAeWDWZUAVCjGbpMWpbRqVjvSDIPPU00Dcf9qdbb"
 );
 
 const Payment = () => {
+  const { getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
   const [clientSecret, setClientSecret] = useState(null);
 
