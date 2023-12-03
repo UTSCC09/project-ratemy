@@ -2,8 +2,9 @@ const { json } = require("express");
 const db = require("../db");
 const openai = require("openai");
 
-// Set up OpenAI API key
-const openaiApiKey = process.env.OPEN_AI_KEY; // Replace with your actual OpenAI API key
+//Citation: https://platform.openai.com/docs/quickstart?context=node
+//Citation: ChatGPT-3.5-turbo for help with adding error handling
+const openaiApiKey = process.env.OPEN_AI_KEY;
 const openaiClient = new openai({ apiKey: openaiApiKey });
 const mongoose = require("mongoose");
 module.exports.post = async (req, res) => {

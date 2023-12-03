@@ -21,6 +21,8 @@ const AddCourse = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    //Citation: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions
     const alphabetRegex = /^[a-zA-Z]+$/;
     const numRegex = /^[0-9]+$/;
     const levelRegex = /^[a-dA-D1-4]$/;

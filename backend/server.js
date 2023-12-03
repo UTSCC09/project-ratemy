@@ -16,16 +16,8 @@
     const port = process.env.PORT || 5000;
 
     app.use(cors());
-    app.use(express.json());
-
-
-// const openaiApiKey = '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';
-
-// const openaiClient = new openai({ apiKey: openaiApiKey });
-
-   
-    
-
+    app.use(express.json());    
+//Citation: chatgpt help to handle cors issue
     app.use(cors({
         origin: "https://ratemyc.vercel.app",
         
