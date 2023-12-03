@@ -30,11 +30,6 @@ const PaymentForm = (props) => {
         confirmParams: {
           return_url: "http://localhost:3000/",
         },
-        payment_method_data: {
-          billing_details: {
-            email: user.email,
-          },
-        },
         redirect: "if_required",
       });
 
