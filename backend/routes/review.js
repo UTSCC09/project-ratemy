@@ -67,9 +67,7 @@ exports.getReviews = async (req, res) => {
         return res.status(500).json({ error: err.message });
     }
 };
-
-
-// takes page and limit as query params
+// Citation: chatGPT help for sorting and filtering
 exports.getCourseReviews = async (req, res) => {
     let page = req.query.page || 0;
     const limit = req.query.limit || 10;
