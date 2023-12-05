@@ -6,7 +6,11 @@ https://ratemyc.vercel.app
 
 ## Project Video URL
 
+https://www.youtube.com/watch?v=W6dJ-Y8s9M8
+
 **Task:** Provide the link to your youtube video. Please make sure the link works.
+
+Note** our production branch is PROD and we used dev to develop instead of main
 
 ## Project Description
 
@@ -43,7 +47,7 @@ We used Vercel to deploy the frontend of our application (React) and Render to d
 
 **Task:** What is the top 3 most challenging things that you have learned/developed for you app? Please restrict your answer to only three items.
 
-1. The get total ratings endpoint was difficult because of the different forms of aggregation and mongodb functions. The documentation helped but it was still difficult to write the correct logic to aggregate our format of data.
+1. The get total ratings endpoint was difficult because of the different forms of aggregation and mongodb functions. The documentation helped but it was still difficult to write the correct logic specific to our data strucutre.
 2. Auth0 has many different ways that you can integrate a web application and a lot of middleware available, so finding the proper way to do it and making sure it works in deployment including getting the OAuth credentials for Google was a challenging and interesting thing to learn about.
 3. The Stripe API is not documented very well and there are multiple ways to integrate it. Searching through different examples and ways to implement took a while but eventually, we figured it out!
 
