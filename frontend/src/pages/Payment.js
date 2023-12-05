@@ -14,7 +14,6 @@ const stripePromise = loadStripe(
 );
 
 const Payment = () => {
-  const { getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
   const [clientSecret, setClientSecret] = useState(null);
   const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
